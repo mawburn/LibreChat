@@ -1,11 +1,11 @@
 import Settings from '../Google';
 import Examples from '../Examples';
 import { useSetOptions } from '~/hooks';
-import { useRecoilValue } from 'recoil';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function GoogleView({ conversation, models, isPreset = false }) {
-  const optionSettings = useRecoilValue(store.optionSettings);
+  const optionSettings = useAtomValue(store.optionSettings);
   const { setOption, setExample, addExample, removeExample } = useSetOptions(
     isPreset ? conversation : null,
   );

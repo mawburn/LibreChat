@@ -9,7 +9,6 @@ export default function MultiMessage({
   messageId,
   conversation,
   messagesTree,
-  scrollToBottom,
   currentEditId,
   setCurrentEditId,
   isSearchView,
@@ -46,7 +45,6 @@ export default function MultiMessage({
               key={message.messageId}
               conversation={conversation}
               message={message}
-              scrollToBottom={scrollToBottom}
               currentEditId={currentEditId}
               setCurrentEditId={null}
               siblingIdx={1}
@@ -63,7 +61,6 @@ export default function MultiMessage({
       key={message.messageId}
       conversation={conversation}
       message={message}
-      scrollToBottom={scrollToBottom}
       currentEditId={currentEditId}
       setCurrentEditId={setCurrentEditId}
       siblingIdx={messagesTree.length - siblingIdx - 1}

@@ -1,10 +1,10 @@
 import { EModelEndpoint } from 'librechat-data-provider';
 import { MessagesSquared, GPTIcon } from '~/components/svg';
-import { useRecoilState } from 'recoil';
 import { Button } from '~/components';
 import { cn } from '~/utils/';
 import store from '~/store';
 import { useLocalize } from '~/hooks';
+import { useAtom } from 'jotai';
 
 type TPopoverButton = {
   label: string;
@@ -23,8 +23,8 @@ export default function PopoverButtons({
   iconClass?: string;
 }) {
   const localize = useLocalize();
-  const [optionSettings, setOptionSettings] = useRecoilState(store.optionSettings);
-  const [showAgentSettings, setShowAgentSettings] = useRecoilState(store.showAgentSettings);
+  const [optionSettings, setOptionSettings] = useAtom(store.optionSettings);
+  const [showAgentSettings, setShowAgentSettings] = useAtom(store.showAgentSettings);
   const { showExamples, isCodeChat } = optionSettings;
   const triggerExamples = () =>
     setOptionSettings((prev) => ({ ...prev, showExamples: !prev.showExamples }));

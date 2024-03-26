@@ -4,7 +4,6 @@ import rehypeRaw from 'rehype-raw';
 import remarkMath from 'remark-math';
 import supersub from 'remark-supersub';
 import rehypeKatex from 'rehype-katex';
-import { useRecoilValue } from 'recoil';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import type { TMessage } from 'librechat-data-provider';
@@ -13,6 +12,7 @@ import CodeBlock from '~/components/Messages/Content/CodeBlock';
 import { cn, langSubset, validateIframe, processLaTeX } from '~/utils';
 import { useChatContext } from '~/Providers';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 type TCodeProps = {
   inline: boolean;
@@ -44,7 +44,7 @@ export const p = memo(({ children }: { children: React.ReactNode }) => {
 const cursor = ' ';
 const Markdown = memo(({ content, message, showCursor }: TContentProps) => {
   const { isSubmitting, latestMessage } = useChatContext();
-  const LaTeXParsing = useRecoilValue<boolean>(store.LaTeXParsing);
+  const LaTeXParsing = useAtomValue<boolean>(store.LaTeXParsing);
 
   const isInitializing = content === '';
 

@@ -12,13 +12,14 @@ import type {
 import { buildDefaultConvo, getDefaultEndpoint, getEndpointField } from '~/utils';
 import useOriginNavigate from './useOriginNavigate';
 import store from '~/store';
+import { useSetAtom } from 'jotai';
 
 const useConversation = () => {
   const navigate = useOriginNavigate();
-  const setConversation = useSetRecoilState(store.conversation);
-  const setMessages = useSetRecoilState<TMessagesAtom>(store.messages);
+  const setConversation = useSetAtom(store.conversation);
+  const setMessages = useSetAtom(store.messages);
   const setSubmission = useSetRecoilState<TSubmission | null>(store.submission);
-  const resetLatestMessage = useResetRecoilState(store.latestMessage);
+  const resetLatestMessage = useSetAtom(store.latestMessage);
   const { data: endpointsConfig = {} as TEndpointsConfig } = useGetEndpointsQuery();
 
   const switchToConversation = useRecoilCallback(

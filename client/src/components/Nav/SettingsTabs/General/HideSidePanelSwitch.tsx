@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -8,7 +8,7 @@ export default function HideSidePanelSwitch({
 }: {
   onCheckedChange?: (value: boolean) => void;
 }) {
-  const [hideSidePanel, setHideSidePanel] = useRecoilState<boolean>(store.hideSidePanel);
+  const [hideSidePanel, setHideSidePanel] = useAtom<boolean>(store.hideSidePanel);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

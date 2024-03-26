@@ -1,6 +1,6 @@
 import { Settings2 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { tPresetSchema, EModelEndpoint } from 'librechat-data-provider';
 import { PluginStoreDialog } from '~/components';
 import {
@@ -15,17 +15,16 @@ import { useSetOptions } from '~/hooks';
 import { ModelSelect } from './ModelSelect';
 import { GenerationButtons } from './Generations';
 import store from '~/store';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 export default function OptionsBar() {
-  const conversation = useRecoilValue(store.conversation);
-  const messagesTree = useRecoilValue(store.messagesTree);
-  const latestMessage = useRecoilValue(store.latestMessage);
-  const setShowBingToneSetting = useSetRecoilState(store.showBingToneSetting);
-  const [showPluginStoreDialog, setShowPluginStoreDialog] = useRecoilState(
-    store.showPluginStoreDialog,
-  );
+  const conversation = useAtomValue(store.conversation);
+  const messagesTree = useAtomValue(store.messagesTree);
+  const latestMessage = useAtomValue(store.latestMessage);
+  const setShowBingToneSetting = useSetAtom(store.showBingToneSetting);
+  const [showPluginStoreDialog, setShowPluginStoreDialog] = useAtom(store.showPluginStoreDialog);
   const [saveAsDialogShow, setSaveAsDialogShow] = useState<boolean>(false);
-  const [showPopover, setShowPopover] = useRecoilState(store.showPopover);
+  const [showPopover, setShowPopover] = useAtom(store.showPopover);
   const [opacityClass, setOpacityClass] = useState('full-opacity');
   const { setOption } = useSetOptions();
 
@@ -125,7 +124,7 @@ export default function OptionsBar() {
               type="button"
               className={cn(
                 cardStyle,
-                'min-w-4 z-50 flex h-[40px] flex-none items-center justify-center px-3 focus:ring-0 focus:ring-offset-0',
+                'z-50 flex h-[40px] min-w-4 flex-none items-center justify-center px-3 focus:ring-0 focus:ring-offset-0',
               )}
               onClick={triggerAdvancedMode}
             >

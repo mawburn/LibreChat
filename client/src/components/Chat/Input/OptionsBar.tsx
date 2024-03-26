@@ -17,13 +17,12 @@ import { useChatContext } from '~/Providers';
 import { Button } from '~/components/ui';
 import { cn, cardStyle } from '~/utils/';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 export default function OptionsBar({ messagesTree }) {
   const [opacityClass, setOpacityClass] = useState('full-opacity');
   const [saveAsDialogShow, setSaveAsDialogShow] = useState<boolean>(false);
-  const [showPluginStoreDialog, setShowPluginStoreDialog] = useRecoilState(
-    store.showPluginStoreDialog,
-  );
+  const [showPluginStoreDialog, setShowPluginStoreDialog] = useAtom(store.showPluginStoreDialog);
 
   const { showPopover, conversation, latestMessage, setShowPopover, setShowBingToneSetting } =
     useChatContext();
@@ -127,7 +126,7 @@ export default function OptionsBar({ messagesTree }) {
               type="button"
               className={cn(
                 cardStyle,
-                'min-w-4 z-50 flex h-[40px] flex-none items-center justify-center px-3 focus:ring-0 focus:ring-offset-0',
+                'z-50 flex h-[40px] min-w-4 flex-none items-center justify-center px-3 focus:ring-0 focus:ring-offset-0',
               )}
               onClick={triggerAdvancedMode}
             >

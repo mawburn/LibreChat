@@ -11,6 +11,7 @@ import { cn, getEndpointField } from '~/utils';
 import { useChatContext } from '~/Providers';
 import { icons } from './Icons';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 type MenuItemProps = {
   title: string;
@@ -30,7 +31,7 @@ const MenuItem: FC<MenuItemProps> = ({
   userProvidesKey,
   ...rest
 }) => {
-  const modularChat = useRecoilValue(store.modularChat);
+  const modularChat = useAtomValue(store.modularChat);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const { conversation, newConversation } = useChatContext();

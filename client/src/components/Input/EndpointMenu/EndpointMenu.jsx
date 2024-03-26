@@ -29,6 +29,7 @@ import DialogTemplate from '~/components/ui/DialogTemplate';
 import { cn, cleanupPreset, mapEndpoints } from '~/utils';
 import { useLocalize, useLocalStorage, useConversation, useDefaultConvo } from '~/hooks';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 export default function NewConversationMenu() {
   const localize = useLocalize();
@@ -37,7 +38,7 @@ export default function NewConversationMenu() {
   const [showPresets, setShowPresets] = useState(true);
   const [showEndpoints, setShowEndpoints] = useState(true);
   const [conversation, setConversation] = useRecoilState(store.conversation) ?? {};
-  const [messages, setMessages] = useRecoilState(store.messages);
+  const [messages, setMessages] = useAtom(store.messages);
 
   const { data: availableEndpoints = [] } = useGetEndpointsQuery({
     select: mapEndpoints,

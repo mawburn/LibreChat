@@ -11,11 +11,12 @@ import usePresetIndexOptions from './usePresetIndexOptions';
 import { useChatContext } from '~/Providers/ChatContext';
 import useLocalStorage from './useLocalStorage';
 import store from '~/store';
+import { useSetAtom } from 'jotai';
 
 type TUseSetOptions = (preset?: TPreset | boolean | null) => TSetOptionsPayload;
 
 const useSetIndexOptions: TUseSetOptions = (preset = false) => {
-  const setShowPluginStoreDialog = useSetRecoilState(store.showPluginStoreDialog);
+  const setShowPluginStoreDialog = useSetAtom(store.showPluginStoreDialog);
   const availableTools = useRecoilValue(store.availableTools);
   const { conversation, setConversation } = useChatContext();
   const [lastBingSettings, setLastBingSettings] = useLocalStorage('lastBingSettings', {});

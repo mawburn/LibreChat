@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import {
   useGetStartupConfig,
   useGetMessagesByConvoId,
@@ -13,14 +13,15 @@ import TextChat from '~/components/Input/TextChat';
 
 import { useAuthContext, useConversation } from '~/hooks';
 import store from '~/store';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 export default function Chat() {
   const { isAuthenticated } = useAuthContext();
   const [shouldNavigate, setShouldNavigate] = useState(true);
   const searchQuery = useRecoilValue(store.searchQuery);
-  const [conversation, setConversation] = useRecoilState(store.conversation);
-  const setMessages = useSetRecoilState(store.messages);
-  const messagesTree = useRecoilValue(store.messagesTree);
+  const [conversation, setConversation] = useAtom(store.conversation);
+  const setMessages = useSetAtom(store.messages);
+  const messagesTree = useAtomValue(store.messagesTree);
   const isSubmitting = useRecoilValue(store.isSubmitting);
   const { newConversation } = useConversation();
   const { conversationId } = useParams();

@@ -9,6 +9,7 @@ import { Spinner } from '~/components';
 import { useScreenshot, useScrollToRef } from '~/hooks';
 
 import store from '~/store';
+import { useAtomValue, useSetAtom } from 'jotai';
 
 export default function Messages({ isSearchView = false }) {
   const [currentEditId, setCurrentEditId] = useState<number | string | null>(-1);
@@ -16,14 +17,14 @@ export default function Messages({ isSearchView = false }) {
   const scrollableRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  const messagesTree = useRecoilValue(store.messagesTree);
-  const showPopover = useRecoilValue(store.showPopover);
-  const setAbortScroll = useSetRecoilState(store.abortScroll);
+  const messagesTree = useAtomValue(store.messagesTree);
+  const showPopover = useAtomValue(store.showPopover);
+  const setAbortScroll = useSetAtom(store.abortScroll);
   const searchResultMessagesTree = useRecoilValue(store.searchResultMessagesTree);
 
   const _messagesTree = isSearchView ? searchResultMessagesTree : messagesTree;
 
-  const conversation = useRecoilValue(store.conversation);
+  const conversation = useAtomValue(store.conversation);
   const { conversationId } = conversation ?? {};
 
   const { screenshotTargetRef } = useScreenshot();
@@ -94,7 +95,6 @@ export default function Messages({ isSearchView = false }) {
                 messageId={conversationId ?? null}
                 conversation={conversation}
                 messagesTree={_messagesTree}
-                scrollToBottom={scrollToBottom}
                 currentEditId={currentEditId ?? null}
                 setCurrentEditId={setCurrentEditId}
                 isSearchView={isSearchView}

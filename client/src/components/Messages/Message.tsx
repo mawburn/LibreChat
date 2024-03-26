@@ -14,6 +14,7 @@ import type { TMessageProps } from '~/common';
 import { cn } from '~/utils';
 import store from '~/store';
 import { useParams } from 'react-router-dom';
+import { useAtom } from 'jotai';
 
 export default function Message(props: TMessageProps) {
   const {
@@ -28,7 +29,7 @@ export default function Message(props: TMessageProps) {
   } = props;
 
   const setLatestMessage = useSetRecoilState(store.latestMessage);
-  const [abortScroll, setAbortScroll] = useRecoilState(store.abortScroll);
+  const [abortScroll, setAbortScroll] = useAtom(store.abortScroll);
   const { isSubmitting, ask, regenerate, handleContinue } = useMessageHandler();
   const { switchToConversation } = useConversation();
   const { conversationId } = useParams();

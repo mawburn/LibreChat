@@ -18,6 +18,7 @@ import { useAuthContext } from '~/hooks/AuthContext';
 import { NotificationSeverity } from '~/common';
 import useLocalize from '~/hooks/useLocalize';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function usePresets() {
   const localize = useLocalize();
@@ -26,7 +27,7 @@ export default function usePresets() {
   const { showToast } = useToastContext();
   const { user, isAuthenticated } = useAuthContext();
 
-  const modularChat = useRecoilValue(store.modularChat);
+  const modularChat = useAtomValue(store.modularChat);
   const [_defaultPreset, setDefaultPreset] = useRecoilState(store.defaultPreset);
   const setPresetModalVisible = useSetRecoilState(store.presetModalVisible);
   const { preset, conversation, newConversation, setPreset } = useChatContext();

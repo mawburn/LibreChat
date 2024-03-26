@@ -17,6 +17,7 @@ import NavLink from './NavLink';
 import Logout from './Logout';
 import { cn } from '~/utils/';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 function NavLinks() {
   const localize = useLocalize();
@@ -28,7 +29,7 @@ function NavLinks() {
   });
   const [showExports, setShowExports] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showFiles, setShowFiles] = useRecoilState(store.showFiles);
+  const [showFiles, setShowFiles] = useAtom(store.showFiles);
 
   const activeConvo = useRecoilValue(store.conversationByIndex(0));
   const globalConvo = useRecoilValue(store.conversation) ?? ({} as TConversation);
@@ -66,7 +67,7 @@ function NavLinks() {
             )}
             <Menu.Button
               className={cn(
-                'group-ui-open:bg-gray-100 dark:group-ui-open:bg-gray-700 duration-350 mt-text-sm mb-1 flex w-full items-center gap-3 text-sm rounded-md px-3 py-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700',
+                'group-ui-open:bg-gray-100 dark:group-ui-open:bg-gray-700 duration-350 mt-text-sm mb-1 flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700',
                 open ? 'bg-gray-100 dark:bg-gray-700' : '',
               )}
               data-testid="nav-user"
