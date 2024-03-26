@@ -1,61 +1,49 @@
-import { atom } from 'recoil';
+import { atom as recAtom } from 'recoil';
+import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import type { TOptionSettings } from '~/common';
 
-const abortScroll = atom<boolean>({
+const abortScroll = recAtom<boolean>({
   key: 'abortScroll',
   default: false,
 });
 
-const showFiles = atom<boolean>({
+const showFiles = recAtom<boolean>({
   key: 'showFiles',
   default: false,
 });
 
-const optionSettings = atom<TOptionSettings>({
+const optionSettings = recAtom<TOptionSettings>({
   key: 'optionSettings',
   default: {},
 });
 
-const showPluginStoreDialog = atom<boolean>({
+const showPluginStoreDialog = recAtom<boolean>({
   key: 'showPluginStoreDialog',
   default: false,
 });
 
-const showAgentSettings = atom<boolean>({
+const showAgentSettings = recAtom<boolean>({
   key: 'showAgentSettings',
   default: false,
 });
 
-const showBingToneSetting = atom<boolean>({
+const showBingToneSetting = recAtom<boolean>({
   key: 'showBingToneSetting',
   default: false,
 });
 
-const showPopover = atom<boolean>({
+const showPopover = recAtom<boolean>({
   key: 'showPopover',
   default: false,
 });
 
-const autoScroll = atom<boolean>({
-  key: 'autoScroll',
-  default: localStorage.getItem('autoScroll') === 'true',
-  effects: [
-    ({ setSelf, onSet }) => {
-      const savedValue = localStorage.getItem('autoScroll');
-      if (savedValue != null) {
-        setSelf(savedValue === 'true');
-      }
+const autoScroll = atomWithStorage<boolean>(
+  'autoScroll',
+  localStorage.getItem('autoScroll') === 'true',
+);
 
-      onSet((newValue: unknown) => {
-        if (typeof newValue === 'boolean') {
-          localStorage.setItem('autoScroll', newValue.toString());
-        }
-      });
-    },
-  ] as const,
-});
-
-const hideSidePanel = atom<boolean>({
+const hideSidePanel = recAtom<boolean>({
   key: 'hideSidePanel',
   default: localStorage.getItem('hideSidePanel') === 'true',
   effects: [
@@ -74,7 +62,7 @@ const hideSidePanel = atom<boolean>({
   ] as const,
 });
 
-const modularChat = atom<boolean>({
+const modularChat = recAtom<boolean>({
   key: 'modularChat',
   default: localStorage.getItem('modularChat') === 'true',
   effects: [
@@ -93,7 +81,7 @@ const modularChat = atom<boolean>({
   ] as const,
 });
 
-const LaTeXParsing = atom<boolean>({
+const LaTeXParsing = recAtom<boolean>({
   key: 'LaTeXParsing',
   default: true,
   effects: [
@@ -112,7 +100,7 @@ const LaTeXParsing = atom<boolean>({
   ] as const,
 });
 
-const UsernameDisplay = atom<boolean>({
+const UsernameDisplay = recAtom<boolean>({
   key: 'UsernameDisplay',
   default: localStorage.getItem('UsernameDisplay') === 'true',
   effects: [

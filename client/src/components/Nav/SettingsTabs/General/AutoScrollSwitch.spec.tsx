@@ -2,7 +2,7 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, fireEvent } from 'test/layout-test-utils';
 import AutoScrollSwitch from './AutoScrollSwitch';
-import { RecoilRoot } from 'recoil';
+import { Provider as JotaiProvider } from 'jotai';
 
 describe('AutoScrollSwitch', () => {
   /**
@@ -16,9 +16,9 @@ describe('AutoScrollSwitch', () => {
 
   it('renders correctly', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <JotaiProvider>
         <AutoScrollSwitch />
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
 
     expect(getByTestId('autoScroll')).toBeInTheDocument();
@@ -26,9 +26,9 @@ describe('AutoScrollSwitch', () => {
 
   it('calls onCheckedChange when the switch is toggled', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <JotaiProvider>
         <AutoScrollSwitch onCheckedChange={mockSetAutoScroll} />
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
     const switchElement = getByTestId('autoScroll');
     fireEvent.click(switchElement);
