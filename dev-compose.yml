@@ -1,0 +1,10 @@
+services:
+  mongodb:
+    container_name: chat-mongodb
+    ports:
+      - 27017:27017
+    image: mongo
+    volumes:
+      - ./data-node:/data/db
+    command: mongod --noauth
+    user: 1000:1000

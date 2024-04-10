@@ -3,9 +3,9 @@ const { titleInstruction } = require('../prompts/titlePrompts');
 
 // Mapping OpenAI roles to Cohere roles
 const roleMap = {
-  user: CohereConstants.ROLE_USER,
-  assistant: CohereConstants.ROLE_CHATBOT,
-  system: CohereConstants.ROLE_SYSTEM, // Recognize and map the system role explicitly
+  user: CohereConstants?.ROLE_USER,
+  assistant: CohereConstants?.ROLE_CHATBOT,
+  system: CohereConstants?.ROLE_SYSTEM, // Recognize and map the system role explicitly
 };
 
 /**
