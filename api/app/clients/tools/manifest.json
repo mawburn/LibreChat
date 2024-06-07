@@ -1,5 +1,12 @@
 [
   {
+    "name": "DemoPlugin",
+    "pluginKey": "demoplugin",
+    "description": "",
+    "icon": "",
+    "authConfig": []
+  },
+  {
     "name": "Traversaal",
     "pluginKey": "traversaal_search",
     "description": "Traversaal is a robust search API tailored for LLM Agents. Get an API key here: https://api.traversaal.ai",

@@ -3,7 +3,9 @@ const { Calculator } = require('langchain/tools/calculator');
 const { WebBrowser } = require('langchain/tools/webbrowser');
 const { SerpAPI, ZapierNLAWrapper } = require('langchain/tools');
 const { OpenAIEmbeddings } = require('langchain/embeddings/openai');
+const cloneDeep = require('lodash/cloneDeep');
 const { getUserPluginAuthValue } = require('~/server/services/PluginService');
+const { logger } = require('~/config');
 const {
   availableTools,
   // Basic Tools
@@ -23,10 +25,10 @@ const {
   TraversaalSearch,
   StructuredWolfram,
   TavilySearchResults,
+  DemoPlugin,
 } = require('../');
 const { loadToolSuite } = require('./loadToolSuite');
 const { loadSpecs } = require('./loadSpecs');
-const { logger } = require('~/config');
 
 const getOpenAIKey = async (options, user) => {
   let openAIApiKey = options.openAIApiKey ?? process.env.OPENAI_API_KEY;
@@ -167,6 +169,7 @@ const loadTools = async ({
     'azure-ai-search': functions ? StructuredACS : AzureAISearch,
     CodeBrew: CodeBrew,
     traversaal_search: TraversaalSearch,
+    demoplugin: DemoPlugin,
   };
 
   const openAIApiKey = await getOpenAIKey(options, user);
@@ -244,12 +247,20 @@ const loadTools = async ({
     uploadImageBuffer: options.uploadImageBuffer,
   };
 
+  const metaData = JSON.parse(JSON.stringify({ options, model, user, functions, returnMap }));
   const toolOptions = {
     serpapi: { location: 'Austin,Texas,United States', hl: 'en', gl: 'us' },
     dalle: imageGenOptions,
     'dall-e': imageGenOptions,
     'stable-diffusion': imageGenOptions,
+    demoplugin: cloneDeep(metaData),
   };
+
+  console.log(
+    'METADATA\n\n\n\n',
+    JSON.stringify(metaData.options.memory.chatHistory, null, 2),
+    '\n\n\n\nEND METADATA',
+  );
 
   const toolAuthFields = {};
 
@@ -277,7 +288,9 @@ const loadTools = async ({
         toolConstructors[tool],
         options,
       );
+
       requestedTools[tool] = toolInstance;
+
       continue;
     }
 
