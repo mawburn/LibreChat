@@ -1,4 +1,3 @@
-import { useRecoilValue } from 'recoil';
 import { useEffect, useMemo } from 'react';
 import { useGetStartupConfig } from 'librechat-data-provider/react-query';
 import { FileSources, LocalStorageKeys, getConfigDefaults } from 'librechat-data-provider';
@@ -8,6 +7,7 @@ import DragDropOverlay from './Input/Files/DragDropOverlay';
 import { useDeleteFilesMutation } from '~/data-provider';
 import { SidePanel } from '~/components/SidePanel';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 const defaultInterface = getConfigDefaults().interface;
 
@@ -21,7 +21,7 @@ export default function Presentation({
   useSidePanel?: boolean;
 }) {
   const { data: startupConfig } = useGetStartupConfig();
-  const hideSidePanel = useRecoilValue(store.hideSidePanel);
+  const hideSidePanel = useAtomValue(store.hideSidePanel);
   const interfaceConfig = useMemo(
     () => startupConfig?.interface ?? defaultInterface,
     [startupConfig],

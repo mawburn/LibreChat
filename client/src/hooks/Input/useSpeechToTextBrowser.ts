@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
 import { useToastContext } from '~/Providers';
 import store from '~/store';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { useAtomValue } from 'jotai';
 
 const useSpeechToTextBrowser = () => {
   const { showToast } = useToastContext();
-  const [endpointSTT] = useRecoilState<string>(store.endpointSTT);
+  const endpointSTT = useAtomValue<string>(store.endpointSTT);
 
   const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } =
     useSpeechRecognition();

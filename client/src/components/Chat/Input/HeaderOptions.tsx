@@ -1,4 +1,3 @@
-import { useRecoilState } from 'recoil';
 import { Settings2 } from 'lucide-react';
 import { Root, Anchor } from '@radix-ui/react-popover';
 import { useState, useEffect, useMemo } from 'react';
@@ -14,6 +13,7 @@ import { useChatContext } from '~/Providers';
 import { Button } from '~/components/ui';
 import { cn, cardStyle } from '~/utils/';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 export default function HeaderOptions({
   interfaceConfig,
@@ -21,9 +21,7 @@ export default function HeaderOptions({
   interfaceConfig?: Partial<TInterfaceConfig>;
 }) {
   const [saveAsDialogShow, setSaveAsDialogShow] = useState<boolean>(false);
-  const [showPluginStoreDialog, setShowPluginStoreDialog] = useRecoilState(
-    store.showPluginStoreDialog,
-  );
+  const [showPluginStoreDialog, setShowPluginStoreDialog] = useAtom(store.showPluginStoreDialog);
 
   const { showPopover, conversation, latestMessage, setShowPopover, setShowBingToneSetting } =
     useChatContext();

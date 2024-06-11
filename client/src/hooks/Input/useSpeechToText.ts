@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import useSpeechToTextBrowser from './useSpeechToTextBrowser';
 import useSpeechToTextExternal from './useSpeechToTextExternal';
-import { useRecoilState } from 'recoil';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 const useSpeechToText = (handleTranscriptionComplete: (text: string) => void) => {
-  const [endpointSTT] = useRecoilState<string>(store.endpointSTT);
+  const endpointSTT = useAtomValue<string>(store.endpointSTT);
   const useExternalSpeechToText = endpointSTT === 'external';
   const [animatedText, setAnimatedText] = useState('');
 

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRecoilValue } from 'recoil';
 import ProgressCircle from './ProgressCircle';
 import CancelledIcon from './CancelledIcon';
 import ProgressText from './ProgressText';
@@ -7,6 +6,7 @@ import FinishedIcon from './FinishedIcon';
 import MarkdownLite from './MarkdownLite';
 import { useProgress } from '~/hooks';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function CodeAnalyze({
   initialProgress = 0.1,
@@ -19,7 +19,7 @@ export default function CodeAnalyze({
   outputs: Record<string, unknown>[];
   isSubmitting: boolean;
 }) {
-  const showCodeDefault = useRecoilValue(store.showCode);
+  const showCodeDefault = useAtomValue(store.showCode);
   const [showCode, setShowCode] = useState(showCodeDefault);
   const progress = useProgress(initialProgress);
   const radius = 56.08695652173913;

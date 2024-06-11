@@ -1,77 +1,45 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import { SettingsViews } from 'librechat-data-provider';
 import type { TOptionSettings } from '~/common';
 
-// Improved helper function to create atoms with localStorage
-function atomWithLocalStorage<T>(key: string, defaultValue: T) {
-  return atom<T>({
-    key,
-    default: defaultValue,
-    effects_UNSTABLE: [
-      ({ setSelf, onSet }) => {
-        const savedValue = localStorage.getItem(key);
-        if (savedValue !== null) {
-          try {
-            const parsedValue = JSON.parse(savedValue);
-            setSelf(parsedValue);
-          } catch (e) {
-            console.error(
-              `Error parsing localStorage key "${key}", \`savedValue\`: defaultValue, error:`,
-              e,
-            );
-            localStorage.setItem(key, JSON.stringify(defaultValue));
-            setSelf(defaultValue);
-          }
-        }
-
-        onSet((newValue: T) => {
-          localStorage.setItem(key, JSON.stringify(newValue));
-        });
-      },
-    ],
-  });
-}
-
 // Static atoms without localStorage
 const staticAtoms = {
-  abortScroll: atom<boolean>({ key: 'abortScroll', default: false }),
-  showFiles: atom<boolean>({ key: 'showFiles', default: false }),
-  optionSettings: atom<TOptionSettings>({ key: 'optionSettings', default: {} }),
-  showPluginStoreDialog: atom<boolean>({ key: 'showPluginStoreDialog', default: false }),
-  showAgentSettings: atom<boolean>({ key: 'showAgentSettings', default: false }),
-  currentSettingsView: atom<SettingsViews>({
-    key: 'currentSettingsView',
-    default: SettingsViews.default,
-  }),
-  showBingToneSetting: atom<boolean>({ key: 'showBingToneSetting', default: false }),
-  showPopover: atom<boolean>({ key: 'showPopover', default: false }),
+  abortScroll: atom<boolean>(false),
+  showFiles: atom<boolean>(false),
+  optionSettings: atom<TOptionSettings>({}),
+  showPluginStoreDialog: atom<boolean>(false),
+  showAgentSettings: atom<boolean>(false),
+  currentSettingsView: atom<SettingsViews>(SettingsViews.default),
+  showBingToneSetting: atom<boolean>(false),
+  showPopover: atom<boolean>(false),
 };
 
 // Atoms with localStorage
 const localStorageAtoms = {
-  autoScroll: atomWithLocalStorage('autoScroll', false),
-  showCode: atomWithLocalStorage('showCode', false),
-  hideSidePanel: atomWithLocalStorage('hideSidePanel', false),
-  modularChat: atomWithLocalStorage('modularChat', true),
-  LaTeXParsing: atomWithLocalStorage('LaTeXParsing', true),
-  UsernameDisplay: atomWithLocalStorage('UsernameDisplay', true),
-  TextToSpeech: atomWithLocalStorage('textToSpeech', true),
-  automaticPlayback: atomWithLocalStorage('automaticPlayback', false),
-  enterToSend: atomWithLocalStorage('enterToSend', true),
-  SpeechToText: atomWithLocalStorage('speechToText', true),
-  conversationMode: atomWithLocalStorage('conversationMode', false),
-  advancedMode: atomWithLocalStorage('advancedMode', false),
-  autoSendText: atomWithLocalStorage('autoSendText', false),
-  autoTranscribeAudio: atomWithLocalStorage('autoTranscribeAudio', false),
-  decibelValue: atomWithLocalStorage('decibelValue', -45),
-  endpointSTT: atomWithLocalStorage('endpointSTT', 'browser'),
-  endpointTTS: atomWithLocalStorage('endpointTTS', 'browser'),
-  cacheTTS: atomWithLocalStorage('cacheTTS', true),
-  voice: atomWithLocalStorage('voice', ''),
-  forkSetting: atomWithLocalStorage('forkSetting', ''),
-  splitAtTarget: atomWithLocalStorage('splitAtTarget', false),
-  rememberForkOption: atomWithLocalStorage('rememberForkOption', true),
-  playbackRate: atomWithLocalStorage<number | null>('playbackRate', null),
+  autoScroll: atomWithStorage('autoScroll', false),
+  showCode: atomWithStorage('showCode', false),
+  hideSidePanel: atomWithStorage('hideSidePanel', false),
+  modularChat: atomWithStorage('modularChat', true),
+  LaTeXParsing: atomWithStorage('LaTeXParsing', true),
+  UsernameDisplay: atomWithStorage('UsernameDisplay', true),
+  TextToSpeech: atomWithStorage('textToSpeech', true),
+  automaticPlayback: atomWithStorage('automaticPlayback', false),
+  enterToSend: atomWithStorage('enterToSend', true),
+  SpeechToText: atomWithStorage('speechToText', true),
+  conversationMode: atomWithStorage('conversationMode', false),
+  advancedMode: atomWithStorage('advancedMode', false),
+  autoSendText: atomWithStorage('autoSendText', false),
+  autoTranscribeAudio: atomWithStorage('autoTranscribeAudio', false),
+  decibelValue: atomWithStorage('decibelValue', -45),
+  endpointSTT: atomWithStorage('endpointSTT', 'browser'),
+  endpointTTS: atomWithStorage('endpointTTS', 'browser'),
+  cacheTTS: atomWithStorage('cacheTTS', true),
+  voice: atomWithStorage('voice', ''),
+  forkSetting: atomWithStorage('forkSetting', ''),
+  splitAtTarget: atomWithStorage('splitAtTarget', false),
+  rememberForkOption: atomWithStorage('rememberForkOption', true),
+  playbackRate: atomWithStorage<number | null>('playbackRate', null),
 };
 
 export default { ...staticAtoms, ...localStorageAtoms };

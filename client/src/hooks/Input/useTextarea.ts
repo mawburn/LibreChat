@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce';
 import { useEffect, useRef, useCallback } from 'react';
 import { isAssistantsEndpoint } from 'librechat-data-provider';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import type { TEndpointOption } from 'librechat-data-provider';
 import type { KeyboardEvent } from 'react';
 import { forceResize, insertTextAtCursor, getAssistantName } from '~/utils';
@@ -12,6 +12,7 @@ import { useChatContext } from '~/Providers/ChatContext';
 import useLocalize from '~/hooks/useLocalize';
 import { globalAudioId } from '~/common';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 type KeyEvent = KeyboardEvent<HTMLTextAreaElement>;
 
@@ -29,7 +30,7 @@ export default function useTextarea({
   const isComposing = useRef(false);
   const { handleFiles } = useFileHandling();
   const assistantMap = useAssistantsMapContext();
-  const enterToSend = useRecoilValue(store.enterToSend);
+  const enterToSend = useAtomValue(store.enterToSend);
 
   const {
     index,

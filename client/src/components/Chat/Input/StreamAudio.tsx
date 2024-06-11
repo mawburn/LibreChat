@@ -9,6 +9,7 @@ import { useAuthContext } from '~/hooks';
 import { globalAudioId } from '~/common';
 import { getLatestText } from '~/utils';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 function timeoutPromise(ms: number, message?: string) {
   return new Promise((_, reject) =>
@@ -22,12 +23,12 @@ const maxPromiseTime = 15000;
 export default function StreamAudio({ index = 0 }) {
   const { token } = useAuthContext();
 
-  const cacheTTS = useRecoilValue(store.cacheTTS);
-  const playbackRate = useRecoilValue(store.playbackRate);
+  const cacheTTS = useAtomValue(store.cacheTTS);
+  const playbackRate = useAtomValue(store.playbackRate);
 
-  const voice = useRecoilValue(store.voice);
+  const voice = useAtomValue(store.voice);
   const activeRunId = useRecoilValue(store.activeRunFamily(index));
-  const automaticPlayback = useRecoilValue(store.automaticPlayback);
+  const automaticPlayback = useAtomValue(store.automaticPlayback);
   const isSubmitting = useRecoilValue(store.isSubmittingFamily(index));
   const latestMessage = useRecoilValue(store.latestMessageFamily(index));
   const setIsPlaying = useSetRecoilState(store.globalAudioPlayingFamily(index));

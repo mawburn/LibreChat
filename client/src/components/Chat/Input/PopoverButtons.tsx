@@ -1,4 +1,3 @@
-import { useRecoilState } from 'recoil';
 import { EModelEndpoint, SettingsViews } from 'librechat-data-provider';
 import type { ReactNode } from 'react';
 import { MessagesSquared, GPTIcon, AssistantIcon, DataIcon } from '~/components/svg';
@@ -7,6 +6,7 @@ import { Button } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils/';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 type TPopoverButton = {
   label: string;
@@ -37,7 +37,7 @@ export default function PopoverButtons({
     setShowAgentSettings,
   } = useChatContext();
   const localize = useLocalize();
-  const [settingsView, setSettingsView] = useRecoilState(store.currentSettingsView);
+  const [settingsView, setSettingsView] = useAtom(store.currentSettingsView);
 
   const { model: _model, endpoint: _endpoint, endpointType } = conversation ?? {};
   const overrideEndpoint = overrideEndpointType ?? _overrideEndpoint;

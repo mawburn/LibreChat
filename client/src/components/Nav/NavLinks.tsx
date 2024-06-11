@@ -1,5 +1,4 @@
 import { FileText } from 'lucide-react';
-import { useRecoilState } from 'recoil';
 import { Fragment, useState, memo } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { useGetUserBalance, useGetStartupConfig } from 'librechat-data-provider/react-query';
@@ -14,6 +13,7 @@ import NavLink from './NavLink';
 import Logout from './Logout';
 import { cn } from '~/utils/';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 function NavLinks() {
   const localize = useLocalize();
@@ -23,7 +23,7 @@ function NavLinks() {
     enabled: !!isAuthenticated && startupConfig?.checkBalance,
   });
   const [showSettings, setShowSettings] = useState(false);
-  const [showFiles, setShowFiles] = useRecoilState(store.showFiles);
+  const [showFiles, setShowFiles] = useAtom(store.showFiles);
 
   const avatarSrc = useAvatar(user);
 

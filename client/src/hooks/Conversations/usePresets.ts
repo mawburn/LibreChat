@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef } from 'react';
 import filenamify from 'filenamify';
 import exportFromJSON from 'export-from-json';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import { QueryKeys, modularEndpoints, isAssistantsEndpoint } from 'librechat-data-provider';
 import { useCreatePresetMutation, useGetModelsQuery } from 'librechat-data-provider/react-query';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
@@ -28,7 +27,7 @@ export default function usePresets() {
   const { showToast } = useToastContext();
   const { user, isAuthenticated } = useAuthContext();
 
-  const modularChat = useRecoilValue(store.modularChat);
+  const modularChat = useAtomValue(store.modularChat);
   const availableTools = useAtomValue(store.availableTools);
   const setPresetModalVisible = useSetAtom(store.presetModalVisible);
   const [_defaultPreset, setDefaultPreset] = useAtom(store.defaultPreset);

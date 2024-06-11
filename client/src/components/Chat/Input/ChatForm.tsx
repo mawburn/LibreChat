@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { memo, useCallback, useRef, useMemo } from 'react';
 import {
   supportsFiles,
@@ -21,13 +21,14 @@ import SendButton from './SendButton';
 import FileRow from './Files/FileRow';
 import Mention from './Mention';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 const ChatForm = ({ index = 0 }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const SpeechToText = useRecoilValue(store.SpeechToText);
-  const TextToSpeech = useRecoilValue(store.TextToSpeech);
-  const automaticPlayback = useRecoilValue(store.automaticPlayback);
+  const SpeechToText = useAtomValue(store.SpeechToText);
+  const TextToSpeech = useAtomValue(store.TextToSpeech);
+  const automaticPlayback = useAtomValue(store.automaticPlayback);
   const [showStopButton, setShowStopButton] = useRecoilState(store.showStopButtonByIndex(index));
   const [showMentionPopover, setShowMentionPopover] = useRecoilState(
     store.showMentionPopoverFamily(index),

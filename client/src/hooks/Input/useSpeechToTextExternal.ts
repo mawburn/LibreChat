@@ -1,21 +1,21 @@
+import { useAtomValue } from 'jotai';
 import { useState, useEffect, useRef } from 'react';
-import { useRecoilState } from 'recoil';
 import { useSpeechToTextMutation } from '~/data-provider';
 import { useToastContext } from '~/Providers';
 import store from '~/store';
 
 const useSpeechToTextExternal = (onTranscriptionComplete: (text: string) => void) => {
   const { showToast } = useToastContext();
-  const [endpointSTT] = useRecoilState<string>(store.endpointSTT);
-  const [speechToText] = useRecoilState<boolean>(store.SpeechToText);
-  const [autoTranscribeAudio] = useRecoilState<boolean>(store.autoTranscribeAudio);
-  const [autoSendText] = useRecoilState<boolean>(store.autoSendText);
+  const endpointSTT = useAtomValue<string>(store.endpointSTT);
+  const speechToText = useAtomValue<boolean>(store.SpeechToText);
+  const autoTranscribeAudio = useAtomValue<boolean>(store.autoTranscribeAudio);
+  const autoSendText = useAtomValue<boolean>(store.autoSendText);
   const [text, setText] = useState<string>('');
   const [isListening, setIsListening] = useState(false);
   const [permission, setPermission] = useState(false);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [isRequestBeingMade, setIsRequestBeingMade] = useState(false);
-  const [minDecibels] = useRecoilState(store.decibelValue);
+  const minDecibels = useAtomValue(store.decibelValue);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioStream = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
