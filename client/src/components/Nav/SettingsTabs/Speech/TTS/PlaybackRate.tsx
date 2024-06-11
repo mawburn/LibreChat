@@ -1,5 +1,5 @@
+import { useAtom, useAtomValue } from 'jotai';
 import React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import { Slider, InputNumber } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -7,8 +7,8 @@ import { cn, defaultTextProps, optionText } from '~/utils/';
 
 export default function DecibelSelector() {
   const localize = useLocalize();
-  const textToSpeech = useRecoilValue(store.TextToSpeech);
-  const [playbackRate, setPlaybackRate] = useRecoilState(store.playbackRate);
+  const textToSpeech = useAtomValue(store.TextToSpeech);
+  const [playbackRate, setPlaybackRate] = useAtom(store.playbackRate);
 
   return (
     <div className="flex items-center justify-between">

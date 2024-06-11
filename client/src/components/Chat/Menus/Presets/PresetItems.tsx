@@ -1,4 +1,3 @@
-import { useRecoilValue } from 'recoil';
 import { Close } from '@radix-ui/react-popover';
 import { Flipper, Flipped } from 'react-flip-toolkit';
 import { useGetEndpointsQuery } from 'librechat-data-provider/react-query';

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Settings } from 'lucide-react';
-import { useRecoilValue } from 'recoil';
 import { EModelEndpoint } from 'librechat-data-provider';
 import { useGetEndpointsQuery } from 'librechat-data-provider/react-query';
 import type { TConversation } from 'librechat-data-provider';
@@ -11,6 +10,7 @@ import { SetKeyDialog } from '~/components/Input/SetKeyDialog';
 import { useChatContext } from '~/Providers';
 import { icons } from './Icons';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 type MenuItemProps = {
   title: string;
@@ -30,7 +30,7 @@ const MenuItem: FC<MenuItemProps> = ({
   userProvidesKey,
   ...rest
 }) => {
-  const modularChat = useRecoilValue(store.modularChat);
+  const modularChat = useAtomValue(store.modularChat);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const { conversation, newConversation } = useChatContext();

@@ -1,12 +1,12 @@
 import debounce from 'lodash/debounce';
 import { Search, X } from 'lucide-react';
-import { useSetRecoilState } from 'recoil';
 import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
 import { forwardRef, useState, useCallback, useMemo, Ref } from 'react';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 import store from '~/store';
+import { useSetAtom } from 'jotai';
 
 type SearchBarProps = {
   clearSearch: () => void;
@@ -16,7 +16,7 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: Ref<HTMLDivElement>) =
   const { clearSearch } = props;
   const queryClient = useQueryClient();
   const clearConvoState = store.useClearConvoState();
-  const setSearchQuery = useSetRecoilState(store.searchQuery);
+  const setSearchQuery = useSetAtom(store.searchQuery);
   const [showClearIcon, setShowClearIcon] = useState(false);
   const [text, setText] = useState('');
   const localize = useLocalize();

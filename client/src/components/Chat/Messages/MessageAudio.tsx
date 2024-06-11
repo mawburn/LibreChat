@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
 import type { TMessage } from 'librechat-data-provider';
 import { VolumeIcon, VolumeMuteIcon, Spinner } from '~/components/svg';
 import { useLocalize, useTextToSpeech } from '~/hooks';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 type THoverButtons = {
   message: TMessage;
@@ -13,7 +13,7 @@ type THoverButtons = {
 
 export default function MessageAudio({ index, message, isLast }: THoverButtons) {
   const localize = useLocalize();
-  const playbackRate = useRecoilValue(store.playbackRate);
+  const playbackRate = useAtomValue(store.playbackRate);
 
   const { toggleSpeech, isSpeaking, isLoading, audioRef } = useTextToSpeech(message, isLast, index);
 

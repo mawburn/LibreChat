@@ -1,9 +1,9 @@
-import { useRecoilValue } from 'recoil';
 import { SettingsViews } from 'librechat-data-provider';
 import type { TSettingsProps } from '~/common';
 import { Advanced } from './Settings';
 import { cn } from '~/utils';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function AlternativeSettings({
   conversation,
@@ -11,7 +11,7 @@ export default function AlternativeSettings({
   isPreset = false,
   className = '',
 }: TSettingsProps) {
-  const currentSettingsView = useRecoilValue(store.currentSettingsView);
+  const currentSettingsView = useAtomValue(store.currentSettingsView);
   if (!conversation?.endpoint || currentSettingsView === SettingsViews.default) {
     return null;
   }

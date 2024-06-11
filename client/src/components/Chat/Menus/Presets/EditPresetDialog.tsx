@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react';
-import { useRecoilState } from 'recoil';
 import { useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from 'librechat-data-provider';
 import { useGetEndpointsQuery } from 'librechat-data-provider/react-query';

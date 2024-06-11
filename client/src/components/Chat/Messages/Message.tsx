@@ -1,4 +1,3 @@
-import { useRecoilValue } from 'recoil';
 import { useAuthContext, useMessageHelpers, useLocalize } from '~/hooks';
 import type { TMessageProps } from '~/common';
 import Icon from '~/components/Chat/Messages/MessageIcon';
@@ -11,9 +10,10 @@ import HoverButtons from './HoverButtons';
 import SubRow from './SubRow';
 import { cn } from '~/utils';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function Message(props: TMessageProps) {
-  const UsernameDisplay = useRecoilValue<boolean>(store.UsernameDisplay);
+  const UsernameDisplay = useAtomValue<boolean>(store.UsernameDisplay);
   const { user } = useAuthContext();
   const localize = useLocalize();
 

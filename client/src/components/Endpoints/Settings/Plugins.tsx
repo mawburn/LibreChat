@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useAvailablePluginsQuery } from 'librechat-data-provider/react-query';
 import type { TPlugin } from 'librechat-data-provider';
@@ -28,6 +27,7 @@ import { useLocalize, useDebouncedInput } from '~/hooks';
 import OptionHover from './OptionHover';
 import { ESide } from '~/common';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function Settings({
   conversation,
@@ -41,7 +41,7 @@ export default function Settings({
   checkPluginSelection: (value: string) => boolean;
 }) {
   const localize = useLocalize();
-  const availableTools = useRecoilValue(store.availableTools);
+  const availableTools = useAtomValue(store.availableTools);
   const { data: allPlugins } = useAvailablePluginsQuery({
     select: selectPlugins,
   });

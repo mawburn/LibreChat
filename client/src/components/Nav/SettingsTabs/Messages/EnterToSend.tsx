@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui/Switch';
 import useLocalize from '~/hooks/useLocalize';
 import store from '~/store';
@@ -8,7 +8,7 @@ export default function SendMessageKeyEnter({
 }: {
   onCheckedChange?: (value: boolean) => void;
 }) {
-  const [enterToSend, setEnterToSend] = useRecoilState<boolean>(store.enterToSend);
+  const [enterToSend, setEnterToSend] = useAtom<boolean>(store.enterToSend);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

@@ -1,11 +1,11 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Dropdown } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
 
 export default function EngineSTTDropdown() {
   const localize = useLocalize();
-  const [endpointSTT, setEndpointSTT] = useRecoilState<string>(store.endpointSTT);
+  const [endpointSTT, setEndpointSTT] = useAtom<string>(store.endpointSTT);
   const endpointOptions = [
     { value: 'browser', display: localize('com_nav_browser') },
     { value: 'external', display: localize('com_nav_external') },

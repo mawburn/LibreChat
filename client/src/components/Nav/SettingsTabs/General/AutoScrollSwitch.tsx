@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -8,7 +8,7 @@ export default function AutoScrollSwitch({
 }: {
   onCheckedChange?: (value: boolean) => void;
 }) {
-  const [autoScroll, setAutoScroll] = useRecoilState<boolean>(store.autoScroll);
+  const [autoScroll, setAutoScroll] = useAtom<boolean>(store.autoScroll);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

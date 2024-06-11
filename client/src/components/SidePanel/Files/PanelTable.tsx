@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSetRecoilState } from 'recoil';
 import { LucideArrowUpLeft } from 'lucide-react';
 import { useLocalize } from '~/hooks';
 import {
@@ -28,6 +27,7 @@ import {
   TableRow,
 } from '~/components/ui';
 import store from '~/store';
+import { useSetAtom } from 'jotai';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,7 +41,7 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [paginationState, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const setShowFiles = useSetRecoilState(store.showFiles);
+  const setShowFiles = useSetAtom(store.showFiles);
 
   const table = useReactTable({
     data,

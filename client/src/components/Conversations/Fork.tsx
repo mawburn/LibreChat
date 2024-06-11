@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { useRecoilState } from 'recoil';
 import { GitFork, InfoIcon } from 'lucide-react';
 import * as Popover from '@radix-ui/react-popover';
 import { ForkOptions, TMessage } from 'librechat-data-provider';
@@ -18,6 +17,7 @@ import { useForkConvoMutation } from '~/data-provider';
 import { ESide } from '~/common';
 import { cn } from '~/utils';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 interface PopoverButtonProps {
   children: React.ReactNode;
@@ -113,10 +113,10 @@ export default function Fork({
   const [remember, setRemember] = useState(false);
   const { navigateToConvo } = useNavigateToConvo(index);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [forkSetting, setForkSetting] = useRecoilState(store.forkSetting);
+  const [forkSetting, setForkSetting] = useAtom(store.forkSetting);
   const [activeSetting, setActiveSetting] = useState(optionLabels.default);
-  const [splitAtTarget, setSplitAtTarget] = useRecoilState(store.splitAtTarget);
-  const [rememberGlobal, setRememberGlobal] = useRecoilState(store.rememberForkOption);
+  const [splitAtTarget, setSplitAtTarget] = useAtom(store.splitAtTarget);
+  const [rememberGlobal, setRememberGlobal] = useAtom(store.rememberForkOption);
   const forkConvo = useForkConvoMutation({
     onSuccess: (data) => {
       if (data) {

@@ -1,14 +1,14 @@
-import { useRecoilState } from 'recoil';
 import { ForkOptions } from 'librechat-data-provider';
 import { Dropdown, Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 export const ForkSettings = () => {
   const localize = useLocalize();
-  const [forkSetting, setForkSetting] = useRecoilState(store.forkSetting);
-  const [splitAtTarget, setSplitAtTarget] = useRecoilState(store.splitAtTarget);
-  const [remember, setRemember] = useRecoilState<boolean>(store.rememberForkOption);
+  const [forkSetting, setForkSetting] = useAtom(store.forkSetting);
+  const [splitAtTarget, setSplitAtTarget] = useAtom(store.splitAtTarget);
+  const [remember, setRemember] = useAtom<boolean>(store.rememberForkOption);
 
   const forkOptions = [
     { value: ForkOptions.DIRECT_PATH, display: localize('com_ui_fork_visible') },

@@ -1,13 +1,13 @@
-import { useRecoilState } from 'recoil';
 import { useMemo, useEffect } from 'react';
 import Dropdown from '~/components/ui/DropdownNoState';
 import { useVoicesQuery } from '~/data-provider';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 export default function VoiceDropdown() {
   const localize = useLocalize();
-  const [voice, setVoice] = useRecoilState(store.voice);
+  const [voice, setVoice] = useAtom(store.voice);
   const { data } = useVoicesQuery();
 
   useEffect(() => {

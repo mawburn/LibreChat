@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 import { EModelEndpoint } from 'librechat-data-provider';
 import { Content, Portal, Root } from '@radix-ui/react-popover';
 import { useGetEndpointsQuery } from 'librechat-data-provider/react-query';
@@ -10,13 +9,14 @@ import { useChatContext } from '~/Providers';
 import MenuButton from './MenuButton';
 import ModelSpecs from './ModelSpecs';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function ModelSpecsMenu({ modelSpecs }: { modelSpecs: TModelSpec[] }) {
   const { conversation } = useChatContext();
   const { newConversation } = useNewConvo();
 
   const { data: endpointsConfig = {} as TEndpointsConfig } = useGetEndpointsQuery();
-  const modularChat = useRecoilValue(store.modularChat);
+  const modularChat = useAtomValue(store.modularChat);
   const getDefaultConversation = useDefaultConvo();
 
   const onSelectSpec = (spec: TModelSpec) => {

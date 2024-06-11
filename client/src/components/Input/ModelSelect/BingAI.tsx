@@ -1,8 +1,8 @@
-import { useRecoilValue } from 'recoil';
 import { SelectDropDown, SelectDropDownPop, Tabs, TabsList, TabsTrigger } from '~/components/ui';
 import { cn, cardStyle } from '~/utils/';
 import type { TModelSelectProps } from '~/common';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function BingAI({
   conversation,
@@ -12,7 +12,7 @@ export default function BingAI({
   popover = false,
 }: TModelSelectProps) {
   // TODO: index family bing tone settings, important for multiview
-  const showBingToneSetting = useRecoilValue(store.showBingToneSetting);
+  const showBingToneSetting = useAtomValue(store.showBingToneSetting);
   if (!conversation) {
     return null;
   }

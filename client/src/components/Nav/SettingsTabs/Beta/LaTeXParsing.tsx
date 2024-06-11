@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -8,7 +8,7 @@ export default function LaTeXParsingSwitch({
 }: {
   onCheckedChange?: (value: boolean) => void;
 }) {
-  const [LaTeXParsing, setLaTeXParsing] = useRecoilState<boolean>(store.LaTeXParsing);
+  const [LaTeXParsing, setLaTeXParsing] = useAtom<boolean>(store.LaTeXParsing);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

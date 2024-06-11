@@ -1,10 +1,10 @@
-import { useRecoilValue } from 'recoil';
 import { SettingsViews } from 'librechat-data-provider';
 import { useGetModelsQuery } from 'librechat-data-provider/react-query';
 import type { TSettingsProps } from '~/common';
 import { getSettings } from './Settings';
 import { cn } from '~/utils';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function Settings({
   conversation,
@@ -13,7 +13,7 @@ export default function Settings({
   className = '',
 }: TSettingsProps) {
   const modelsQuery = useGetModelsQuery();
-  const currentSettingsView = useRecoilValue(store.currentSettingsView);
+  const currentSettingsView = useAtomValue(store.currentSettingsView);
   if (!conversation?.endpoint || currentSettingsView !== SettingsViews.default) {
     return null;
   }

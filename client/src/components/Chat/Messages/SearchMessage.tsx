@@ -1,4 +1,3 @@
-import { useRecoilValue } from 'recoil';
 import { useAuthContext, useLocalize } from '~/hooks';
 import type { TMessageProps } from '~/common';
 import MinimalHoverButtons from '~/components/Chat/Messages/MinimalHoverButtons';
@@ -8,9 +7,10 @@ import SearchButtons from './SearchButtons';
 import SubRow from './SubRow';
 import { cn } from '~/utils';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function Message({ message }: Pick<TMessageProps, 'message'>) {
-  const UsernameDisplay = useRecoilValue<boolean>(store.UsernameDisplay);
+  const UsernameDisplay = useAtomValue<boolean>(store.UsernameDisplay);
   const { user } = useAuthContext();
   const localize = useLocalize();
 

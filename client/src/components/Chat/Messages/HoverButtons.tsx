@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
 import type { TConversation, TMessage } from 'librechat-data-provider';
 import { EditIcon, Clipboard, CheckMark, ContinueIcon, RegenerateIcon } from '~/components/svg';
 import { useGenerationsByLatest, useLocalize } from '~/hooks';
@@ -7,6 +6,7 @@ import { Fork } from '~/components/Conversations';
 import MessageAudio from './MessageAudio';
 import { cn } from '~/utils';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 type THoverButtons = {
   isEditing: boolean;
@@ -39,7 +39,7 @@ export default function HoverButtons({
   const { endpoint: _endpoint, endpointType } = conversation ?? {};
   const endpoint = endpointType ?? _endpoint;
   const [isCopied, setIsCopied] = useState(false);
-  const [TextToSpeech] = useRecoilState<boolean>(store.TextToSpeech);
+  const TextToSpeech = useAtomValue<boolean>(store.TextToSpeech);
 
   const {
     hideEditButton,

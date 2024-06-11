@@ -1,7 +1,6 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import { SettingsTabValues } from 'librechat-data-provider';
 import React, { useState, useRef } from 'react';
-import { useRecoilState } from 'recoil';
 import { useOnClickOutside } from '~/hooks';
 import store from '~/store';
 import ConversationModeSwitch from './ConversationModeSwitch';
@@ -20,11 +19,12 @@ import {
   AutoSendTextSwitch,
   AutoTranscribeAudioSwitch,
 } from './STT';
+import { useAtomValue } from 'jotai';
 
 function Speech() {
   const [confirmClear, setConfirmClear] = useState(false);
-  const [advancedMode] = useRecoilState<boolean>(store.advancedMode);
-  const [autoTranscribeAudio] = useRecoilState<boolean>(store.autoTranscribeAudio);
+  const advancedMode = useAtomValue<boolean>(store.advancedMode);
+  const autoTranscribeAudio = useAtomValue<boolean>(store.autoTranscribeAudio);
 
   const contentRef = useRef(null);
   useOnClickOutside(contentRef, () => confirmClear && setConfirmClear(false), []);

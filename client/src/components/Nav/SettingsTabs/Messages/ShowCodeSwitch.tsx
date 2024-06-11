@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -8,7 +8,7 @@ export default function ShowCodeSwitch({
 }: {
   onCheckedChange?: (value: boolean) => void;
 }) {
-  const [showCode, setShowCode] = useRecoilState<boolean>(store.showCode);
+  const [showCode, setShowCode] = useAtom<boolean>(store.showCode);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

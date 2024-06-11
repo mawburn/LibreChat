@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -8,7 +8,7 @@ export default function ModularChatSwitch({
 }: {
   onCheckedChange?: (value: boolean) => void;
 }) {
-  const [modularChat, setModularChat] = useRecoilState<boolean>(store.modularChat);
+  const [modularChat, setModularChat] = useAtom<boolean>(store.modularChat);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

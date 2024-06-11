@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom, useAtomValue } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -9,10 +9,8 @@ export default function AutoTranscribeAudioSwitch({
   onCheckedChange?: (value: boolean) => void;
 }) {
   const localize = useLocalize();
-  const [autoTranscribeAudio, setAutoTranscribeAudio] = useRecoilState<boolean>(
-    store.autoTranscribeAudio,
-  );
-  const [speechToText] = useRecoilState<boolean>(store.SpeechToText);
+  const [autoTranscribeAudio, setAutoTranscribeAudio] = useAtom<boolean>(store.autoTranscribeAudio);
+  const speechToText = useAtomValue<boolean>(store.SpeechToText);
 
   const handleCheckedChange = (value: boolean) => {
     setAutoTranscribeAudio(value);
