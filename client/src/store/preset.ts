@@ -1,25 +1,13 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 import { TPreset } from 'librechat-data-provider';
 
-const presets = atom<TPreset[]>({
-  key: 'presets',
-  default: [],
-});
+const presets = atom<TPreset[]>([]);
 
-const preset = atom<TPreset | null>({
-  key: 'preset',
-  default: null,
-});
+const preset = atom<TPreset | null>(null);
 
-const defaultPreset = atom<TPreset | null>({
-  key: 'defaultPreset',
-  default: null,
-});
+const defaultPreset = atom<TPreset | null>(null);
 
-const presetModalVisible = atom<boolean>({
-  key: 'presetModalVisible',
-  default: false,
-});
+const presetModalVisible = atom<boolean>(false);
 
 export default {
   preset,

@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useGetSearchEnabledQuery } from 'librechat-data-provider/react-query';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useSearchInfiniteQuery } from '~/data-provider';
-import useConversation from './useConversation';
 import store from '~/store';
+import useConversation from './useConversation';
 
 export default function useSearchMessages({ isAuthenticated }: { isAuthenticated: boolean }) {
   const navigate = useNavigate();
@@ -12,8 +12,8 @@ export default function useSearchMessages({ isAuthenticated }: { isAuthenticated
   const [pageNumber, setPageNumber] = useState(1);
   const { searchPlaceholderConversation } = useConversation();
 
-  const searchQuery = useRecoilValue(store.searchQuery);
-  const setIsSearchEnabled = useSetRecoilState(store.isSearchEnabled);
+  const searchQuery = useAtomValue(store.searchQuery);
+  const setIsSearchEnabled = useSetAtom(store.isSearchEnabled);
 
   const searchEnabledQuery = useGetSearchEnabledQuery({ enabled: isAuthenticated });
   const searchQueryRes = useSearchInfiniteQuery(

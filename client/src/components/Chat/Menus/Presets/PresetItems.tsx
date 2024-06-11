@@ -2,6 +2,7 @@ import { useRecoilValue } from 'recoil';
 import { Close } from '@radix-ui/react-popover';
 import { Flipper, Flipped } from 'react-flip-toolkit';
 import { useGetEndpointsQuery } from 'librechat-data-provider/react-query';
+import { useAtomValue } from 'jotai';
 import type { FC } from 'react';
 import type { TPreset } from 'librechat-data-provider';
 import { getPresetTitle, getEndpointField, getIconKey } from '~/utils';
@@ -9,11 +10,11 @@ import FileUpload from '~/components/Chat/Input/Files/FileUpload';
 import { PinIcon, EditIcon, TrashIcon } from '~/components/svg';
 import { Dialog, DialogTrigger, Label } from '~/components/ui';
 import DialogTemplate from '~/components/ui/DialogTemplate';
-import { MenuSeparator, MenuItem } from '../UI';
-import { icons } from '../Endpoints/Icons';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 import store from '~/store';
+import { icons } from '../Endpoints/Icons';
+import { MenuSeparator, MenuItem } from '../UI';
 
 const PresetItems: FC<{
   presets: TPreset[];
@@ -33,7 +34,7 @@ const PresetItems: FC<{
   onFileSelected,
 }) => {
   const { data: endpointsConfig } = useGetEndpointsQuery();
-  const defaultPreset = useRecoilValue(store.defaultPreset);
+  const defaultPreset = useAtomValue(store.defaultPreset);
   const localize = useLocalize();
   return (
     <>

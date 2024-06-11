@@ -6,13 +6,8 @@ import {
 } from 'librechat-data-provider/react-query';
 import { useNavigate } from 'react-router-dom';
 import { FileSources, LocalStorageKeys, isAssistantsEndpoint } from 'librechat-data-provider';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-  useRecoilCallback,
-  useResetRecoilState,
-} from 'recoil';
+import { useRecoilState, useSetRecoilState, useRecoilCallback, useResetRecoilState } from 'recoil';
+import { useAtomValue } from 'jotai';
 import type {
   TPreset,
   TSubmission,
@@ -29,16 +24,16 @@ import {
   getModelSpecIconURL,
   updateLastSelectedModel,
 } from '~/utils';
-import useAssistantListMap from './Assistants/useAssistantListMap';
 import { useDeleteFilesMutation } from '~/data-provider';
-import { usePauseGlobalAudio } from './Audio';
 import { mainTextareaId } from '~/common';
 import store from '~/store';
+import { usePauseGlobalAudio } from './Audio';
+import useAssistantListMap from './Assistants/useAssistantListMap';
 
 const useNewConvo = (index = 0) => {
   const navigate = useNavigate();
   const { data: startupConfig } = useGetStartupConfig();
-  const defaultPreset = useRecoilValue(store.defaultPreset);
+  const defaultPreset = useAtomValue(store.defaultPreset);
   const { setConversation } = store.useCreateConversationAtom(index);
   const [files, setFiles] = useRecoilState(store.filesByIndex(index));
   const setSubmission = useSetRecoilState<TSubmission | null>(store.submissionByIndex(index));

@@ -1,14 +1,14 @@
-import { useRecoilState } from 'recoil';
+import React, { useContext, useCallback, useRef } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import { SettingsTabValues } from 'librechat-data-provider';
-import React, { useContext, useCallback, useRef } from 'react';
+import { useAtom } from 'jotai';
 import type { TDangerButtonProps } from '~/common';
 import { ThemeContext, useLocalize, useLocalStorage } from '~/hooks';
+import { Dropdown } from '~/components/ui';
+import store from '~/store';
 import HideSidePanelSwitch from './HideSidePanelSwitch';
 import AutoScrollSwitch from './AutoScrollSwitch';
-import { Dropdown } from '~/components/ui';
 import DangerButton from '../DangerButton';
-import store from '~/store';
 import ArchivedChats from './ArchivedChats';
 
 export const ThemeSelector = ({
@@ -118,8 +118,7 @@ export const LangSelector = ({
 
 function General() {
   const { theme, setTheme } = useContext(ThemeContext);
-
-  const [langcode, setLangcode] = useRecoilState(store.lang);
+  const [langcode, setLangcode] = useAtom(store.lang);
   const [selectedLang, setSelectedLang] = useLocalStorage('selectedLang', langcode);
 
   const contentRef = useRef(null);

@@ -1,14 +1,8 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 
-const isSearchEnabled = atom<boolean | null>({
-  key: 'isSearchEnabled',
-  default: null,
-});
+const isSearchEnabled = atom<boolean | null>(null);
 
-const searchQuery = atom({
-  key: 'searchQuery',
-  default: '',
-});
+const searchQuery = atom('');
 
 export default {
   isSearchEnabled,

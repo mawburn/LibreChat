@@ -1,5 +1,4 @@
 import { Search } from 'lucide-react';
-import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import { useGetEndpointsQuery } from 'librechat-data-provider/react-query';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '~/components/ui';
@@ -10,9 +9,10 @@ import { useLocalize, useNewConvo } from '~/hooks';
 import { NewChatIcon } from '~/components/svg';
 import store from '~/store';
 import type { TConversation } from 'librechat-data-provider';
+import { useAtomValue } from 'jotai';
 
 const NewChatButtonIcon = ({ conversation }: { conversation: TConversation | null }) => {
-  const searchQuery = useRecoilValue(store.searchQuery);
+  const searchQuery = useAtomValue(store.searchQuery);
   const { data: endpointsConfig } = useGetEndpointsQuery();
 
   if (searchQuery) {

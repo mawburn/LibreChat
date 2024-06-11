@@ -1,8 +1,5 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 
-const refreshConversationsHint = atom<number>({
-  key: 'refreshConversationsHint',
-  default: 1,
-});
+const refreshConversationsHint = atom<number>(1);
 
 export default { refreshConversationsHint };

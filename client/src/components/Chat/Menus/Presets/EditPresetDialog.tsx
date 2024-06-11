@@ -1,8 +1,9 @@
-import { useRecoilState } from 'recoil';
 import { useCallback, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
 import { useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from 'librechat-data-provider';
 import { useGetEndpointsQuery } from 'librechat-data-provider/react-query';
+import { useAtom } from 'jotai';
 import type { TModelsConfig, TEndpointsConfig } from 'librechat-data-provider';
 import {
   cn,
@@ -35,7 +36,7 @@ const EditPresetDialog = ({
     optionKey: 'title',
     initialValue: preset?.title,
   });
-  const [presetModalVisible, setPresetModalVisible] = useRecoilState(store.presetModalVisible);
+  const [presetModalVisible, setPresetModalVisible] = useAtom(store.presetModalVisible);
 
   const { data: availableEndpoints = [] } = useGetEndpointsQuery({
     select: mapEndpoints,

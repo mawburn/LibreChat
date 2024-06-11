@@ -1,9 +1,9 @@
-import { useSetRecoilState } from 'recoil';
 import { useCallback } from 'react';
+import { useSetAtom } from 'jotai';
 import store from '~/store';
 
 const useConversations = () => {
-  const setRefreshConversationsHint = useSetRecoilState(store.refreshConversationsHint);
+  const setRefreshConversationsHint = useSetAtom(store.refreshConversationsHint);
 
   const refreshConversations = useCallback(() => {
     setRefreshConversationsHint((prevState) => prevState + 1);

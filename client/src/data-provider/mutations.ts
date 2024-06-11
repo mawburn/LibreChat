@@ -3,9 +3,9 @@ import {
   LocalStorageKeys,
   defaultAssistantsVersion,
 } from 'librechat-data-provider';
-import { useSetRecoilState } from 'recoil';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataService, MutationKeys, QueryKeys, defaultOrderQuery } from 'librechat-data-provider';
+import { useSetAtom } from 'jotai';
 import type { UseMutationResult } from '@tanstack/react-query';
 import type t from 'librechat-data-provider';
 import {
@@ -16,9 +16,9 @@ import {
   updateConversation,
   deleteConversation,
 } from '~/utils';
-import { useConversationsInfiniteQuery, useSharedLinksInfiniteQuery } from './queries';
-import { normalizeData } from '~/utils/collection';
 import store from '~/store';
+import { normalizeData } from '~/utils/collection';
+import { useConversationsInfiniteQuery, useSharedLinksInfiniteQuery } from './queries';
 
 /** Conversations */
 export const useGenTitleMutation = (): UseMutationResult<
@@ -510,7 +510,7 @@ export const useLogoutUserMutation = (
   options?: t.LogoutOptions,
 ): UseMutationResult<unknown, unknown, undefined, unknown> => {
   const queryClient = useQueryClient();
-  const setDefaultPreset = useSetRecoilState(store.defaultPreset);
+  const setDefaultPreset = useSetAtom(store.defaultPreset);
   return useMutation([MutationKeys.logoutUser], {
     mutationFn: () => dataService.logout(),
 
@@ -550,7 +550,7 @@ export const useDeleteUserMutation = (
   options?: t.MutationOptions<unknown, undefined>,
 ): UseMutationResult<unknown, unknown, undefined, unknown> => {
   const queryClient = useQueryClient();
-  const setDefaultPreset = useSetRecoilState(store.defaultPreset);
+  const setDefaultPreset = useSetAtom(store.defaultPreset);
   return useMutation([MutationKeys.deleteUser], {
     mutationFn: () => dataService.deleteUser(),
 
