@@ -1,10 +1,10 @@
 import { useRef } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import { useUpdateMessageMutation } from 'librechat-data-provider/react-query';
 import type { TEditProps } from '~/common';
 import store from '~/store';
 import Container from './Container';
 import { useLocalize } from '~/hooks';
+import { useAtom, useAtomValue } from 'jotai';
 
 const EditMessage = ({
   text,
@@ -15,8 +15,8 @@ const EditMessage = ({
   siblingIdx,
   setSiblingIdx,
 }: TEditProps) => {
-  const [messages, setMessages] = useRecoilState(store.messages);
-  const conversation = useRecoilValue(store.conversation);
+  const [messages, setMessages] = useAtom(store.messages);
+  const conversation = useAtomValue(store.conversation);
   const textEditor = useRef<HTMLDivElement | null>(null);
   const { conversationId, parentMessageId, messageId } = message;
   const updateMessageMutation = useUpdateMessageMutation(conversationId ?? '');

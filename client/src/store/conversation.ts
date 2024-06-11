@@ -1,31 +1,22 @@
-import { atom, selector, atomFamily } from 'recoil';
-import { TConversation, TMessagesAtom, TMessage } from 'librechat-data-provider';
+import { atom } from 'jotai';
+import { atomWithReset } from 'jotai/utils';
+import { TConversation, TMessage, TMessagesAtom } from 'librechat-data-provider';
+import { atomFamily } from 'recoil';
 import { buildTree } from '~/utils';
 
-const conversation = atom<TConversation | null>({
-  key: 'conversation',
-  default: null,
-});
+const conversation = atom<TConversation | null>(null);
 
 // current messages of the conversation, must be an array
 // sample structure
 // [{text, sender, messageId, parentMessageId, isCreatedByUser}]
-const messages = atom<TMessagesAtom>({
-  key: 'messages',
-  default: [],
+const messages = atom<TMessagesAtom>([]);
+
+const messagesTree = atom((get) => {
+  const _messages = get(messages);
+  return buildTree({ messages: _messages });
 });
 
-const messagesTree = selector({
-  key: 'messagesTree',
-  get: ({ get }) => {
-    return buildTree({ messages: get(messages) });
-  },
-});
-
-const latestMessage = atom<TMessage | null>({
-  key: 'latestMessage',
-  default: null,
-});
+const latestMessage = atomWithReset<TMessage | null>(null);
 
 const messagesSiblingIdxFamily = atomFamily<number, string | null | undefined>({
   key: 'messagesSiblingIdx',

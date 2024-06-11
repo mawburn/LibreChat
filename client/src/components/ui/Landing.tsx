@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { useGetStartupConfig } from 'librechat-data-provider/react-query';
 import LightningIcon from '~/components/svg/LightningIcon';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
@@ -7,11 +7,12 @@ import CautionIcon from '~/components/svg/CautionIcon';
 import SunIcon from '~/components/svg/SunIcon';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 export default function Landing() {
   const { data: config } = useGetStartupConfig();
   const setText = useSetRecoilState(store.text);
-  const conversation = useRecoilValue(store.conversation);
+  const conversation = useAtomValue(store.conversation);
   const localize = useLocalize();
   const { title = localize('com_ui_new_chat') } = conversation ?? {};
 

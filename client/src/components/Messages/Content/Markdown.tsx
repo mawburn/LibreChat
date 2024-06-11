@@ -12,6 +12,7 @@ import rehypeRaw from 'rehype-raw';
 import CodeBlock from './CodeBlock';
 import { langSubset, validateIframe } from '~/utils';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 type TCodeProps = {
   inline: boolean;
@@ -43,7 +44,7 @@ const p = React.memo(({ children }: { children: React.ReactNode }) => {
 const Markdown = React.memo(({ content, message, showCursor }: TContentProps) => {
   const [cursor, setCursor] = useState('█');
   const isSubmitting = useRecoilValue(store.isSubmitting);
-  const latestMessage = useRecoilValue(store.latestMessage);
+  const latestMessage = useAtomValue(store.latestMessage);
   const isInitializing = content === '<span className="result-streaming">█</span>';
 
   const { isEdited, messageId } = message ?? {};

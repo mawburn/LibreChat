@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState, useResetRecoilState, useRecoilCallback } from 'recoil';
+import { useSetRecoilState, useRecoilCallback } from 'recoil';
 import { useGetEndpointsQuery, useGetModelsQuery } from 'librechat-data-provider/react-query';
 import type {
   TConversation,
@@ -12,12 +12,14 @@ import type {
 } from 'librechat-data-provider';
 import { buildDefaultConvo, getDefaultEndpoint, getEndpointField } from '~/utils';
 import store from '~/store';
+import { useSetAtom } from 'jotai';
+import { useResetAtom } from 'jotai/utils';
 
 const useConversation = () => {
   const navigate = useNavigate();
-  const setConversation = useSetRecoilState(store.conversation);
-  const resetLatestMessage = useResetRecoilState(store.latestMessage);
-  const setMessages = useSetRecoilState<TMessagesAtom>(store.messages);
+  const setConversation = useSetAtom(store.conversation);
+  const resetLatestMessage = useResetAtom(store.latestMessage);
+  const setMessages = useSetAtom(store.messages);
   const setSubmission = useSetRecoilState<TSubmission | null>(store.submission);
   const { data: endpointsConfig = {} as TEndpointsConfig } = useGetEndpointsQuery();
   const modelsQuery = useGetModelsQuery();

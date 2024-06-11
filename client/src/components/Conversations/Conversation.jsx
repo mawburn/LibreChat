@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { useUpdateConversationMutation } from '~/data-provider';
 import { useConversations, useConversation } from '~/hooks';
 import { MinimalIcon } from '~/components/Endpoints';
@@ -8,10 +8,11 @@ import { useToastContext } from '~/Providers';
 import DeleteButton from './DeleteButton';
 import RenameButton from './RenameButton';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 export default function Conversation({ conversation, retainView }) {
   const { showToast } = useToastContext();
-  const [currentConversation, setCurrentConversation] = useRecoilState(store.conversation);
+  const [currentConversation, setCurrentConversation] = useAtom(store.conversation);
   const setSubmission = useSetRecoilState(store.submission);
 
   const { refreshConversations } = useConversations();
