@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import { QueryKeys, modularEndpoints, isAssistantsEndpoint } from 'librechat-data-provider';
 import { useCreatePresetMutation, useGetModelsQuery } from 'librechat-data-provider/react-query';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type { TPreset, TEndpointsConfig } from 'librechat-data-provider';
 import {
   useUpdatePresetMutation,
@@ -29,7 +29,7 @@ export default function usePresets() {
   const { user, isAuthenticated } = useAuthContext();
 
   const modularChat = useRecoilValue(store.modularChat);
-  const availableTools = useRecoilValue(store.availableTools);
+  const availableTools = useAtomValue(store.availableTools);
   const setPresetModalVisible = useSetAtom(store.presetModalVisible);
   const [_defaultPreset, setDefaultPreset] = useAtom(store.defaultPreset);
   const presetsQuery = useGetPresetsQuery({ enabled: !!user && isAuthenticated });

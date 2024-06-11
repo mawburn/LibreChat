@@ -1,14 +1,18 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 import { NotificationSeverity } from '~/common';
 
-const toastState = atom({
-  key: 'toastState',
-  default: {
-    open: false,
-    message: '',
-    severity: NotificationSeverity.SUCCESS,
-    showIcon: true,
-  },
+type NotifyToast = {
+  open: boolean;
+  message: string;
+  severity: NotificationSeverity;
+  showIcon: boolean;
+};
+
+const toastState = atom<NotifyToast>({
+  open: false,
+  message: '',
+  severity: NotificationSeverity.SUCCESS,
+  showIcon: true,
 });
 
 export default { toastState };

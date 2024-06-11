@@ -1,5 +1,4 @@
 import { FileImage } from 'lucide-react';
-import { useSetRecoilState } from 'recoil';
 import { useState, useEffect } from 'react';
 import { fileConfig as defaultFileConfig, mergeFileConfig } from 'librechat-data-provider';
 import type { TUser } from 'librechat-data-provider';
@@ -10,9 +9,10 @@ import { Spinner } from '~/components/svg';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils/';
 import store from '~/store';
+import { useSetAtom } from 'jotai';
 
 function Avatar() {
-  const setUser = useSetRecoilState(store.user);
+  const setUser = useSetAtom(store.user);
   const [input, setinput] = useState<File | null>(null);
   const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);

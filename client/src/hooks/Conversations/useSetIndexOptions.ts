@@ -1,15 +1,16 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { TPreset, TPlugin, TConversation, tConvoUpdateSchema } from 'librechat-data-provider';
 import type { TSetExample, TSetOption, TSetOptionsPayload } from '~/common';
 import usePresetIndexOptions from './usePresetIndexOptions';
 import { useChatContext } from '~/Providers/ChatContext';
 import store from '~/store';
+import { useSetAtom } from 'jotai';
 
 type TUseSetOptions = (preset?: TPreset | boolean | null) => TSetOptionsPayload;
 
 const useSetIndexOptions: TUseSetOptions = (preset = false) => {
   const setShowPluginStoreDialog = useSetRecoilState(store.showPluginStoreDialog);
-  const availableTools = useRecoilValue(store.availableTools);
+  const availableTools = useSetAtom(store.availableTools);
   const { conversation, setConversation } = useChatContext();
 
   const result = usePresetIndexOptions(preset);

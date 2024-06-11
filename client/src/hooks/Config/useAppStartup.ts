@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
 import { LocalStorageKeys } from 'librechat-data-provider';
 import { useAvailablePluginsQuery } from 'librechat-data-provider/react-query';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import type { TStartupConfig, TPlugin, TUser } from 'librechat-data-provider';
 import { data as modelSpecs } from '~/components/Chat/Menus/Models/fakeData';
 import { mapPlugins, selectPlugins, processPlugins } from '~/utils';
@@ -27,7 +26,7 @@ export default function useAppStartup({
   user?: TUser;
 }) {
   useConfigOverride();
-  const setAvailableTools = useSetRecoilState(store.availableTools);
+  const setAvailableTools = useSetAtom(store.availableTools);
   const [defaultPreset, setDefaultPreset] = useAtom(store.defaultPreset);
   const { data: allPlugins } = useAvailablePluginsQuery({
     enabled: !!user?.plugins,

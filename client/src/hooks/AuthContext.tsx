@@ -7,7 +7,6 @@ import {
   createContext,
   useContext,
 } from 'react';
-import { useRecoilState } from 'recoil';
 import { TLoginResponse, setTokenHeader, TLoginUser } from 'librechat-data-provider';
 import {
   useGetUserQuery,
@@ -19,6 +18,7 @@ import { TAuthConfig, TUserContext, TAuthContext, TResError } from '~/common';
 import { useLogoutUserMutation } from '~/data-provider';
 import useTimeout from './useTimeout';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 const AuthContext = createContext<TAuthContext | undefined>(undefined);
 
@@ -29,7 +29,7 @@ const AuthContextProvider = ({
   authConfig?: TAuthConfig;
   children: ReactNode;
 }) => {
-  const [user, setUser] = useRecoilState(store.user);
+  const [user, setUser] = useAtom(store.user);
   const [token, setToken] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);

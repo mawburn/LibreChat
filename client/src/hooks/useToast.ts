@@ -1,11 +1,11 @@
-import { useRecoilState } from 'recoil';
 import { useRef, useEffect } from 'react';
 import type { TShowToast } from '~/common';
 import { NotificationSeverity } from '~/common';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 export default function useToast(showDelay = 100) {
-  const [toast, setToast] = useRecoilState(store.toastState);
+  const [toast, setToast] = useAtom(store.toastState);
   const showTimerRef = useRef<number | null>(null);
   const hideTimerRef = useRef<number | null>(null);
 

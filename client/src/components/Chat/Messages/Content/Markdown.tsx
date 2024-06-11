@@ -15,6 +15,7 @@ import { useChatContext, useToastContext } from '~/Providers';
 import { useFileDownload } from '~/data-provider';
 import useLocalize from '~/hooks/useLocalize';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 type TCodeProps = {
   inline: boolean;
@@ -40,7 +41,7 @@ export const code = memo(({ inline, className, children }: TCodeProps) => {
 });
 
 export const a = memo(({ href, children }: { href: string; children: React.ReactNode }) => {
-  const user = useRecoilValue(store.user);
+  const user = useAtomValue(store.user);
   const { showToast } = useToastContext();
   const localize = useLocalize();
 
