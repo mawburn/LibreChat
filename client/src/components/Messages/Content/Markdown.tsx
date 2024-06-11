@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import type { TMessage } from 'librechat-data-provider';
-import { useRecoilValue } from 'recoil';
 import ReactMarkdown from 'react-markdown';
 import type { PluggableList } from 'unified';
 import rehypeKatex from 'rehype-katex';
@@ -43,7 +42,7 @@ const p = React.memo(({ children }: { children: React.ReactNode }) => {
 
 const Markdown = React.memo(({ content, message, showCursor }: TContentProps) => {
   const [cursor, setCursor] = useState('█');
-  const isSubmitting = useRecoilValue(store.isSubmitting);
+  const isSubmitting = useAtomValue(store.isSubmitting);
   const latestMessage = useAtomValue(store.latestMessage);
   const isInitializing = content === '<span className="result-streaming">█</span>';
 

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState, useRecoilCallback } from 'recoil';
+import { useRecoilCallback } from 'recoil';
 import { useGetEndpointsQuery, useGetModelsQuery } from 'librechat-data-provider/react-query';
 import type {
   TConversation,
@@ -20,7 +20,7 @@ const useConversation = () => {
   const setConversation = useSetAtom(store.conversation);
   const resetLatestMessage = useResetAtom(store.latestMessage);
   const setMessages = useSetAtom(store.messages);
-  const setSubmission = useSetRecoilState<TSubmission | null>(store.submission);
+  const setSubmission = useSetAtom(store.submission);
   const { data: endpointsConfig = {} as TEndpointsConfig } = useGetEndpointsQuery();
   const modelsQuery = useGetModelsQuery();
 
