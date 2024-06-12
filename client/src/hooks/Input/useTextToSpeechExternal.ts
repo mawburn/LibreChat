@@ -5,6 +5,7 @@ import useAudioRef from '~/hooks/Audio/useAudioRef';
 import useLocalize from '~/hooks/useLocalize';
 import { useToastContext } from '~/Providers';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 const createFormData = (text: string, voice: string) => {
   const formData = new FormData();
@@ -16,9 +17,9 @@ const createFormData = (text: string, voice: string) => {
 function useTextToSpeechExternal(messageId: string, isLast: boolean, index = 0) {
   const localize = useLocalize();
   const { showToast } = useToastContext();
-  const voice = useRecoilValue(store.voice);
-  const cacheTTS = useRecoilValue(store.cacheTTS);
-  const playbackRate = useRecoilValue(store.playbackRate);
+  const voice = useAtomValue(store.voice);
+  const cacheTTS = useAtomValue(store.cacheTTS);
+  const playbackRate = useAtomValue(store.playbackRate);
 
   const [downloadFile, setDownloadFile] = useState(false);
   const [isLocalSpeaking, setIsSpeaking] = useState(false);

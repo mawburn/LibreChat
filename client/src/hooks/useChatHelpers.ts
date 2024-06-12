@@ -24,6 +24,7 @@ import useUserKey from './Input/useUserKey';
 import { getEndpointField } from '~/utils';
 import useNewConvo from './useNewConvo';
 import store from '~/store';
+import { useSetAtom } from 'jotai';
 
 // this to be set somewhere else
 export default function useChatHelpers(index = 0, paramId: string | undefined) {
@@ -52,8 +53,8 @@ export default function useChatHelpers(index = 0, paramId: string | undefined) {
   const resetLatestMessage = useResetRecoilState(store.latestMessageFamily(index));
   const [isSubmitting, setIsSubmitting] = useRecoilState(store.isSubmittingFamily(index));
   const [latestMessage, setLatestMessage] = useRecoilState(store.latestMessageFamily(index));
-  const setSiblingIdx = useSetRecoilState(
-    store.messagesSiblingIdxFamily(latestMessage?.parentMessageId ?? null),
+  const setSiblingIdx = useSetAtom(
+    store.messagesSiblingIdxAtom(latestMessage?.parentMessageId ?? null),
   );
 
   const setMessages = useCallback(

@@ -4,11 +4,11 @@ import type { TMessage } from 'librechat-data-provider';
 import useTextToSpeechExternal from './useTextToSpeechExternal';
 import useTextToSpeechBrowser from './useTextToSpeechBrowser';
 import { usePauseGlobalAudio } from '../Audio';
-import { useRecoilState } from 'recoil';
 import store from '~/store';
+import { useAtomValue } from 'jotai';
 
 const useTextToSpeech = (message: TMessage, isLast: boolean, index = 0) => {
-  const [endpointTTS] = useRecoilState<string>(store.endpointTTS);
+  const endpointTTS = useAtomValue<string>(store.endpointTTS);
   const useExternalTextToSpeech = endpointTTS === 'external';
 
   const {

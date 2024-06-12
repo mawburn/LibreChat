@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
 import type { TMessageProps } from '~/common';
 // eslint-disable-next-line import/no-cycle
 import Message from './Message';
 // eslint-disable-next-line import/no-cycle
 import MessageParts from './MessageParts';
 import store from '~/store';
+import { useAtom } from 'jotai';
 
 export default function MultiMessage({
   // messageId is used recursively here
@@ -14,7 +14,7 @@ export default function MultiMessage({
   currentEditId,
   setCurrentEditId,
 }: TMessageProps) {
-  const [siblingIdx, setSiblingIdx] = useRecoilState(store.messagesSiblingIdxFamily(messageId));
+  const [siblingIdx, setSiblingIdx] = useAtom(store.messagesSiblingIdxAtom(messageId));
 
   const setSiblingIdxRev = (value: number) => {
     setSiblingIdx((messagesTree?.length ?? 0) - value - 1);
