@@ -32,7 +32,9 @@ services:
     container_name: chat-mongodb
     image: mongo
     restart: always
-    user: "${UID}:${GID}"
+    ports:
+      - 27017:27017
+    # user: "${UID}:${GID}"
     volumes:
       - ./data-node:/data/db
     command: mongod --noauth
@@ -40,7 +42,9 @@ services:
     container_name: chat-meilisearch
     image: getmeili/meilisearch:v1.7.3
     restart: always
-    user: "${UID}:${GID}"
+    ports: # Uncomment this to access meilisearch from outside docker
+      - 7700:7700 # if exposing these ports, make sure your master key is not the default value
+    # user: "${UID}:${GID}"
     environment:
       - MEILI_HOST=http://meilisearch:7700
       - MEILI_NO_ANALYTICS=true
