@@ -29,6 +29,7 @@
     "ban-user": "node config/ban-user.js",
     "delete-user": "node config/delete-user.js",
     "backend": "cross-env NODE_ENV=production node api/server/index.js",
+    "backend:clinic": "NODE_ENV=development clinic flame --on-port 'autocannon http://127.0.0.1:3080' -- node api/server/clinic.js",
     "backend:dev": "cross-env NODE_ENV=development npx nodemon api/server/index.js",
     "backend:stop": "node config/stop-backend.js",
     "build:data-provider": "cd packages/data-provider && npm run build",
