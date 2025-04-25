@@ -79,6 +79,7 @@ export default function useChatFunctions({
   const includeShadcnui = useRecoilValue(store.includeShadcnui);
   const { getExpiry } = useUserKey(conversation?.endpoint ?? '');
   const customPromptMode = useRecoilValue(store.customPromptMode);
+  const navigate = useNavigate();
   const setShowStopButton = useSetRecoilState(store.showStopButtonByIndex(index));
   const resetLatestMultiMessage = useResetRecoilState(store.latestMessageFamily(index + 1));
 

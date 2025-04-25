@@ -2,6 +2,7 @@ import { v4 } from 'uuid';
 import { useCallback, useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   QueryKeys,
@@ -173,6 +174,8 @@ export default function useEventHandlers({
   const { announcePolite } = useLiveAnnouncer();
   const applyAgentTemplate = useApplyNewAgentTemplate();
   const setAbortScroll = useSetRecoilState(store.abortScroll);
+  const navigate = useNavigate();
+  const location = useLocation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -425,6 +428,7 @@ export default function useEventHandlers({
       setConversation,
       resetLatestMessage,
       applyAgentTemplate,
+      applyAgentTemplate,
     ],
   );
 
@@ -488,6 +492,10 @@ export default function useEventHandlers({
       }
 
       if (setConversation && isAddedRequest !== true) {
+        if (location.pathname === '/c/new') {
+          navigate(`/c/${conversation.conversationId}`, { replace: true });
+        }
+
         setConversation((prevState) => {
           const update = {
             ...prevState,
@@ -513,6 +521,7 @@ export default function useEventHandlers({
       setIsSubmitting(false);
     },
     [
+      setShowStopButton,
       setShowStopButton,
       setCompleted,
       getMessages,
@@ -727,6 +736,15 @@ export default function useEventHandlers({
         setIsSubmitting(false);
       }
     },
+    [
+      finalHandler,
+      newConversation,
+      setIsSubmitting,
+      token,
+      cancelHandler,
+      getMessages,
+      setMessages,
+    ],
     [
       finalHandler,
       newConversation,
