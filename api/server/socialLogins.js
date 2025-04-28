@@ -10,6 +10,7 @@ const {
   discordLogin,
   facebookLogin,
   appleLogin,
+  gcpIAPLogin,
 } = require('~/strategies');
 const { isEnabled } = require('~/server/utils');
 const keyvRedis = require('~/cache/keyvRedis');
@@ -21,6 +22,10 @@ const { logger } = require('~/config');
  */
 const configureSocialLogins = (app) => {
   logger.info('Configuring social logins...');
+
+  if (isEnabled(process.env.GCP_IAP_ENABLED)) {
+    passport.use(gcpIAPLogin());
+  }
 
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     passport.use(googleLogin());

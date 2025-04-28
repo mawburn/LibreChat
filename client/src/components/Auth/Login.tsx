@@ -31,22 +31,30 @@ function Login() {
     }
   }, [disableAutoRedirect, searchParams, setSearchParams]);
 
-  // Determine whether we should auto-redirect to OpenID.
-  const shouldAutoRedirect =
-    startupConfig?.openidLoginEnabled &&
-    startupConfig?.openidAutoRedirect &&
-    startupConfig?.serverDomain &&
-    !isAutoRedirectDisabled;
+  // Determine whether we should auto-redirect to OpenID or bypass login for GCP IAP
+  const shouldRedirect =
+    (startupConfig?.openidLoginEnabled &&
+      startupConfig?.openidAutoRedirect &&
+      startupConfig?.serverDomain &&
+      !isAutoRedirectDisabled) ||
+    startupConfig?.gcpIapEnabled;
 
   useEffect(() => {
-    if (shouldAutoRedirect) {
+    if (!shouldRedirect) {
+      return;
+    }
+
+    if (startupConfig?.gcpIapEnabled) {
+      console.log('GCP IAP enabled: Bypassing login page');
+      window.location.href = '/c/new';
+    } else {
       console.log('Auto-redirecting to OpenID provider...');
       window.location.href = `${startupConfig.serverDomain}/oauth/openid`;
     }
-  }, [shouldAutoRedirect, startupConfig]);
+  }, [shouldRedirect, startupConfig]);
 
-  // Render fallback UI if auto-redirect is active.
-  if (shouldAutoRedirect) {
+  // Render fallback UI if auto-redirect is active
+  if (shouldRedirect && !startupConfig?.gcpIapEnabled) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-4">
         <p className="text-lg font-semibold">

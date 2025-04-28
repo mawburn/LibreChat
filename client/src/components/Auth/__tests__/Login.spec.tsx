@@ -31,6 +31,7 @@ const mockStartupConfig = {
     emailLoginEnabled: true,
     socialLoginEnabled: true,
     serverDomain: 'mock-server',
+    gcpIapEnabled: false,
   },
 };
 
@@ -195,4 +196,51 @@ test('Navigates to / on successful login', async () => {
   await userEvent.click(submitButton);
 
   waitFor(() => expect(history.location.pathname).toBe('/'));
+});
+
+test('Auto-redirects when GCP IAP is enabled', () => {
+  // Mock window.location.href to avoid test navigation
+  const originalLocation = window.location;
+  delete window.location;
+  window.location = { href: jest.fn() } as unknown as Location;
+
+  setup({
+    useGetStartupConfigReturnValue: {
+      ...mockStartupConfig,
+      data: {
+        ...mockStartupConfig.data,
+        gcpIapEnabled: true,
+      },
+    },
+  });
+
+  // Check if it redirects to the chat page
+  expect(window.location.href).toBe('/c/new');
+
+  // Restore window.location
+  window.location = originalLocation;
+});
+
+test('Auto-redirects when OpenID auto-redirect is enabled', () => {
+  // Mock window.location.href to avoid test navigation
+  const originalLocation = window.location;
+  delete window.location;
+  window.location = { href: jest.fn() } as unknown as Location;
+
+  setup({
+    useGetStartupConfigReturnValue: {
+      ...mockStartupConfig,
+      data: {
+        ...mockStartupConfig.data,
+        openidLoginEnabled: true,
+        openidAutoRedirect: true,
+      },
+    },
+  });
+
+  // Check if it redirects to the OpenID provider
+  expect(window.location.href).toBe('mock-server/oauth/openid');
+
+  // Restore window.location
+  window.location = originalLocation;
 });

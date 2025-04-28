@@ -519,6 +519,7 @@ export type TStartupConfig = {
   openidLabel: string;
   openidImageUrl: string;
   openidAutoRedirect: boolean;
+  gcpIapEnabled?: boolean;
   /** LDAP Auth Configuration */
   ldap?: {
     /** LDAP enabled */

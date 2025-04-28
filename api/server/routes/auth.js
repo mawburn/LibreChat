@@ -28,7 +28,9 @@ const {
   resetPasswordLimiter,
   validateRegistration,
   validatePasswordReset,
+  checkIAPHeader,
 } = require('~/server/middleware');
+const { isEnabled } = require('~/server/utils');
 
 const router = express.Router();
 
@@ -44,7 +46,13 @@ router.post(
   setBalanceConfig,
   loginController,
 );
-router.post('/refresh', refreshController);
+
+if (isEnabled(process.env.GCP_IAP_ENABLED)) {
+  router.post('/refresh', checkIAPHeader, refreshController);
+} else {
+  router.post('/refresh', refreshController);
+}
+
 router.post(
   '/register',
   registerLimiter,

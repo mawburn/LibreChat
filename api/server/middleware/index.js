@@ -4,6 +4,7 @@ const validateImageRequest = require('./validateImageRequest');
 const buildEndpointOption = require('./buildEndpointOption');
 const validateMessageReq = require('./validateMessageReq');
 const checkDomainAllowed = require('./checkDomainAllowed');
+const { checkIAPHeader, injectIAPHeader } = require('./checkIAPHeader');
 const concurrentLimiter = require('./concurrentLimiter');
 const validateEndpoint = require('./validateEndpoint');
 const requireLocalAuth = require('./requireLocalAuth');
@@ -31,6 +32,8 @@ module.exports = {
   ...roles,
   noIndex,
   checkBan,
+  checkIAPHeader,
+  injectIAPHeader,
   uaParser,
   setHeaders,
   logHeaders,

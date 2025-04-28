@@ -20,6 +20,7 @@ const configureSocialLogins = require('./socialLogins');
 const AppService = require('./services/AppService');
 const staticCache = require('./utils/staticCache');
 const noIndex = require('./middleware/noIndex');
+const { injectIAPHeader } = require('./middleware/checkIAPHeader');
 const routes = require('./routes');
 
 const { PORT, HOST, ALLOW_SOCIAL_LOGIN, DISABLE_COMPRESSION, TRUST_PROXY } = process.env ?? {};
@@ -76,6 +77,11 @@ const startServer = async () => {
   /* LDAP Auth */
   if (process.env.LDAP_URL && process.env.LDAP_USER_SEARCH_BASE) {
     passport.use(ldapLogin);
+  }
+
+  /* GCP IAP Auth */
+  if (isEnabled(process.env.GCP_IAP_ENABLED)) {
+    app.use(injectIAPHeader);
   }
 
   if (isEnabled(ALLOW_SOCIAL_LOGIN)) {

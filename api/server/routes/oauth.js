@@ -179,4 +179,18 @@ router.post(
   oauthHandler,
 );
 
+/**
+ * GCP IAP Routes
+ */
+router.get(
+  '/iap/callback',
+  passport.authenticate('gcpIapHeader', {
+    failureRedirect: `${domains.client}/oauth/error`,
+    failureMessage: true,
+    session: false,
+  }),
+  setBalanceConfig,
+  oauthHandler,
+);
+
 module.exports = router;
