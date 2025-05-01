@@ -1,4 +1,3 @@
-import React from 'react';
 import { useWatch, useFormContext } from 'react-hook-form';
 import { SystemRoles, Permissions, PermissionTypes } from 'librechat-data-provider';
 import type { AgentForm, AgentPanelProps } from '~/common';
@@ -51,12 +50,12 @@ export default function AgentFooter({
     return localize('com_ui_create');
   };
 
-  const showPanel = activePanel !== Panel.advanced && activePanel !== Panel.version;
+  const showButtons = activePanel !== Panel.advanced && activePanel !== Panel.version;
 
   return (
     <div className="mx-1 mb-1 flex w-full flex-col gap-2">
-      {showPanel && <AdvancedButton setActivePanel={setActivePanel} />}
-      {showPanel && <VersionButton setActivePanel={setActivePanel} />}
+      {showButtons && <AdvancedButton setActivePanel={setActivePanel} />}
+      {showButtons && <VersionButton setActivePanel={setActivePanel} />}
       {user?.role === SystemRoles.ADMIN && <AdminSettings />}
       {/* Context Button */}
       <div className="flex items-center justify-end gap-2">
