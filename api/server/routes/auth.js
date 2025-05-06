@@ -48,7 +48,7 @@ router.post(
 );
 
 if (isEnabled(process.env.GCP_IAP_ENABLED)) {
-  router.post('/refresh', checkIAPHeader, refreshController);
+  router.post('/refresh', checkIAPHeader);
 } else {
   router.post('/refresh', refreshController);
 }

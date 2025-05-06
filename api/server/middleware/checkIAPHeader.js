@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { User, findSession } = require('~/models');
 const { logger } = require('~/config');
 const { setAuthTokens } = require('~/server/services/AuthService');
+const { refreshController } = require('~/server/controllers/AuthController');
 
 /**
  * Middleware to inject and log Google IAP headers
@@ -37,7 +38,7 @@ const injectIAPHeader = (req, res, next) => {
 };
 
 /**
- * Middleware to check IAP header authentication status
+ * Middleware to check IAP header authentication status, and pass to refreshController
  * @function
  * @param {import('express').Request} req - Express request object
  * @param {import('express').Response} res - Express response object
@@ -54,7 +55,7 @@ const checkIAPHeader = async (req, res, next) => {
         const user = await User.findOne({ _id: payload.id });
         if (user) {
           logger.debug('Development mode: Valid session found');
-          return next();
+          return refreshController(req, res, next);
         }
       } catch (err) {
         // Token invalid or expired, will auto-login below
@@ -82,7 +83,7 @@ const checkIAPHeader = async (req, res, next) => {
 
     // Create authentication tokens
     await setAuthTokens(user._id, res);
-    return next();
+    return refreshController(req, res, next);
   }
 
   // Production mode checks
@@ -106,7 +107,9 @@ const checkIAPHeader = async (req, res, next) => {
     if (!session || session.expiration <= new Date()) {
       return res.redirect('/oauth/iap/callback');
     }
-    next();
+
+    // IAP check passed, forward to refreshController
+    return refreshController(req, res, next);
   } catch (err) {
     console.error(`[checkIAPHeaderAndSession] Error verifying refresh token: ${err}`);
     return res.redirect('/oauth/iap/callback');
