@@ -50,13 +50,13 @@ export default function AgentFooter({
     return localize('com_ui_create');
   };
 
-  const showButtons = activePanel !== Panel.advanced && activePanel !== Panel.version;
+  const showButtons = activePanel === Panel.builder;
 
   return (
     <div className="mx-1 mb-1 flex w-full flex-col gap-2">
       {showButtons && <AdvancedButton setActivePanel={setActivePanel} />}
       {showButtons && <VersionButton setActivePanel={setActivePanel} />}
-      {user?.role === SystemRoles.ADMIN && <AdminSettings />}
+      {user?.role === SystemRoles.ADMIN && showButtons && <AdminSettings />}
       {/* Context Button */}
       <div className="flex items-center justify-end gap-2">
         <DeleteButton
