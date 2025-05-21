@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import {
   atom,
   selector,
@@ -15,7 +15,7 @@ import type { TMessage, TPreset, TConversation, TSubmission } from 'librechat-da
 import type { TOptionSettings, ExtendedFile } from '~/common';
 import { useSetConvoContext } from '~/Providers/SetConvoContext';
 import { storeEndpointSettings, logger, createChatSearchParams } from '~/utils';
-import { createSearchParams } from 'react-router-dom';
+import { useRouterService } from '~/routes/RouterService';
 
 const latestMessageKeysAtom = atom<(string | number)[]>({
   key: 'latestMessageKeys',
@@ -105,21 +105,6 @@ const conversationByIndex = atomFamily<TConversation | null, string | number>({
           `${LocalStorageKeys.LAST_CONVO_SETUP}_${index}`,
           JSON.stringify(newValue),
         );
-
-        const disableParams = newValue.disableParams === true;
-        const shouldUpdateParams =
-          index === 0 &&
-          !disableParams &&
-          newValue.createdAt === '' &&
-          JSON.stringify(newValue) !== JSON.stringify(oldValue) &&
-          (oldValue as TConversation)?.conversationId === Constants.NEW_CONVO;
-
-        if (shouldUpdateParams) {
-          const newParams = createChatSearchParams(newValue);
-          const searchParams = createSearchParams(newParams);
-          const url = `${window.location.pathname}?${searchParams.toString()}`;
-          window.history.pushState({}, '', url);
-        }
       });
     },
   ] as const,
@@ -260,12 +245,20 @@ function useCreateConversationAtom(key: string | number) {
   const [keys, setKeys] = useRecoilState(conversationKeysAtom);
   const setConversation = useSetRecoilState(conversationByIndex(key));
   const conversation = useRecoilValue(conversationByIndex(key));
+  const { syncConversationToURL } = useConversationURLSync();
 
   useEffect(() => {
     if (!keys.includes(key)) {
       setKeys([...keys, key]);
     }
   }, [key, keys, setKeys]);
+
+  // Add effect to sync conversation changes to URL
+  useEffect(() => {
+    if (conversation && Number(key) === 0) {
+      syncConversationToURL(conversation);
+    }
+  }, [conversation, key, syncConversationToURL]);
 
   return { hasSetConversation, conversation, setConversation };
 }
@@ -384,6 +377,35 @@ const updateConversationSelector = selectorFamily({
     },
 });
 
+function useConversationURLSync() {
+  const router = useRouterService();
+
+  const syncConversationToURL = useCallback(
+    (conversation: TConversation) => {
+      if (!conversation || conversation.disableParams === true) {
+        return;
+      }
+
+      const shouldUpdateParams =
+        conversation.createdAt === '' && conversation.conversationId === Constants.NEW_CONVO;
+
+      if (shouldUpdateParams) {
+        const newParams = createChatSearchParams(conversation);
+        const paramEntries: Record<string, string> = {};
+
+        for (const [key, value] of newParams.entries()) {
+          paramEntries[key] = value;
+        }
+
+        router.setQueryParams(paramEntries);
+      }
+    },
+    [router],
+  );
+
+  return { syncConversationToURL };
+}
+
 export default {
   conversationKeysAtom,
   conversationByIndex,
@@ -415,4 +437,5 @@ export default {
   useClearLatestMessages,
   showPromptsPopoverFamily,
   updateConversationSelector,
+  useConversationURLSync,
 };
