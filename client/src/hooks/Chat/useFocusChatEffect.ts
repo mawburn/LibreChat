@@ -17,8 +17,8 @@ export default function useFocusChatEffect(textAreaRef: React.RefObject<HTMLText
         textAreaRef.current?.focus();
       }
 
-      const search = router.getSearchParams().toString();
-      const queryString = search ? `?${search}` : '';
+      const searchParams = router.getSearchParams();
+      const queryString = searchParams.toString() ? `?${searchParams.toString()}` : '';
       router.navigateTo(`${location.pathname}${queryString}`, {
         replace: true,
         state: {},

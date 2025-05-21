@@ -3,6 +3,7 @@ import {
   useLocation,
   useNavigate,
   useNavigation,
+  useParams,
   useSubmit,
 } from 'react-router-dom';
 
@@ -112,4 +113,8 @@ export function useRouterService() {
 
 export function useTypedLoaderData<T>() {
   return useLoaderData() as T;
+}
+
+export function useTypedParams<T>() {
+  return useParams() as T;
 }

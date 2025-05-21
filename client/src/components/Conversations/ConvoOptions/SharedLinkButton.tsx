@@ -11,6 +11,7 @@ import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
 import { NotificationSeverity } from '~/common';
 import { useToastContext } from '~/Providers';
 import { useLocalize } from '~/hooks';
+import { useRouterService } from '~/routes/RouterService';
 
 export default function SharedLinkButton({
   share,
@@ -28,6 +29,7 @@ export default function SharedLinkButton({
   setSharedLink: (sharedLink: string) => void;
 }) {
   const localize = useLocalize();
+  const router = useRouterService();
   const { showToast } = useToastContext();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const shareId = share?.shareId ?? '';
@@ -66,9 +68,12 @@ export default function SharedLinkButton({
     },
   });
 
-  const generateShareLink = useCallback((shareId: string) => {
-    return `${window.location.protocol}//${window.location.host}/share/${shareId}`;
-  }, []);
+  const generateShareLink = useCallback(
+    (shareId: string) => {
+      return router.buildShareableUrl(`/share/${shareId}`);
+    },
+    [router],
+  );
 
   const updateSharedLink = async () => {
     if (!shareId) {

@@ -1,3 +1,4 @@
+/* eslint-disable i18next/no-literal-string */
 import React, { useState } from 'react';
 import DeleteIconButton from '../DeleteIconButton';
 import { Button } from '~/components/ui';
@@ -6,7 +7,7 @@ import { TFile } from 'librechat-data-provider/dist/types';
 import UploadFileButton from '../FileList/UploadFileButton';
 import UploadFileModal from '../FileList/UploadFileModal';
 import { BarChart4Icon, Clock3, FileClock, FileIcon, InfoIcon, PlusIcon } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { useTypedParams } from '~/routes/RouterService';
 
 const tempVectorStore = {
   _id: 'vs_NeHK4JidLKJ2qo23dKLLK',
@@ -96,10 +97,10 @@ export default function VectorStorePreview() {
   const [vectorStore, setVectorStore] = useState(tempVectorStore);
   const [filesAttached, setFilesAttached] = useState(tempFilesAttached);
   const [assistants, setAssistants] = useState(tempAssistants);
-  const params = useParams();
+  const params = useTypedParams<{ vectorStoreId: string }>();
 
   return (
-    <div className="m-3 ml-1 mr-7 bg-white p-2 sm:p-4 md:p-6  lg:p-10">
+    <div className="m-3 ml-1 mr-7 bg-white p-2 sm:p-4 md:p-6 lg:p-10">
       <div className="flex flex-col justify-between md:flex-row">
         <div className="flex flex-col">
           <b className="hidden text-base md:text-lg lg:block lg:text-xl">VECTOR STORE</b>

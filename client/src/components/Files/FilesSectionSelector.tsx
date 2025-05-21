@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+/* eslint-disable i18next/no-literal-string */
 import { Button } from '../ui';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useRouterService } from '~/routes/RouterService';
 
 export default function FilesSectionSelector() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouterService();
+  const currentPath = router.getCurrentPath();
   let selectedPage = '/vector-stores';
 
-  if (location.pathname.includes('vector-stores')) {
+  if (currentPath.includes('vector-stores')) {
     selectedPage = '/vector-stores';
   }
-  if (location.pathname.includes('files')) {
+  if (currentPath.includes('files')) {
     selectedPage = '/files';
   }
 
@@ -25,7 +25,7 @@ export default function FilesSectionSelector() {
           style={selectedPage === '/vector-stores' ? darkButton : lightButton}
           onClick={() => {
             selectedPage = '/vector-stores';
-            navigate('/d/vector-stores');
+            router.navigateTo('/d/vector-stores');
           }}
         >
           Vector Stores
@@ -37,7 +37,7 @@ export default function FilesSectionSelector() {
           style={selectedPage === '/files' ? darkButton : lightButton}
           onClick={() => {
             selectedPage = '/files';
-            navigate('/d/files');
+            router.navigateTo('/d/files');
           }}
         >
           Files

@@ -1,7 +1,8 @@
 import { useState, useId, useRef, memo, useCallback, useMemo } from 'react';
 import * as Menu from '@ariakit/react/menu';
-import { useParams, useNavigate } from 'react-router-dom';
 import { Ellipsis, Share2, Copy, Archive, Pen, Trash } from 'lucide-react';
+import { useRouterService } from '~/routes/RouterService';
+import { useTypedParams } from '~/routes/RouterService';
 import type { MouseEvent } from 'react';
 import {
   useDuplicateConversationMutation,
@@ -39,8 +40,8 @@ function ConvoOptions({
   const { navigateToConvo } = useNavigateToConvo(index);
   const { showToast } = useToastContext();
 
-  const navigate = useNavigate();
-  const { conversationId: currentConvoId } = useParams();
+  const router = useRouterService();
+  const { conversationId: currentConvoId } = useTypedParams<{ conversationId: string }>();
   const { newConversation } = useNewConvo();
 
   const shareButtonRef = useRef<HTMLButtonElement>(null);
@@ -96,7 +97,7 @@ function ConvoOptions({
         onSuccess: () => {
           if (currentConvoId === convoId || currentConvoId === 'new') {
             newConversation();
-            navigate('/c/new', { replace: true });
+            router.navigateTo('/c/new', { replace: true });
           }
           retainView();
           setIsPopoverActive(false);
@@ -114,7 +115,7 @@ function ConvoOptions({
     conversationId,
     currentConvoId,
     archiveConvoMutation,
-    navigate,
+    router,
     newConversation,
     retainView,
     setIsPopoverActive,

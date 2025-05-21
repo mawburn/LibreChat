@@ -1,6 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import { useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouterService } from '~/routes/RouterService';
 import {
@@ -96,12 +95,11 @@ export default function useQueryParams({
   const settingsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const methods = useChatFormContext();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const router = useRouterService();
   const getDefaultConversation = useDefaultConvo();
   const modularChat = useRecoilValue(store.modularChat);
   const availableTools = useRecoilValue(store.availableTools);
   const { submitMessage } = useSubmitMessage();
-  const router = useRouterService();
 
   const queryClient = useQueryClient();
   const { conversation, newConversation } = useChatContext();
@@ -261,6 +259,7 @@ export default function useQueryParams({
 
   useEffect(() => {
     const processQueryParams = () => {
+      const searchParams = router.getSearchParams();
       const queryParams: Record<string, string> = {};
       searchParams.forEach((value, key) => {
         queryParams[key] = value;
@@ -304,13 +303,22 @@ export default function useQueryParams({
 
       /** Mark processing as complete and clean up as needed */
       const success = () => {
+        const searchParams = router.getSearchParams();
         const paramString = searchParams.toString();
-        const currentParams = new URLSearchParams(paramString);
-        currentParams.delete('prompt');
-        currentParams.delete('q');
-        currentParams.delete('submit');
+        const currentParams = new Map();
 
-        setSearchParams(currentParams, { replace: true });
+        searchParams.forEach((value, key) => {
+          if (key !== 'prompt' && key !== 'q' && key !== 'submit') {
+            currentParams.set(key, value);
+          }
+        });
+
+        const paramsObj: Record<string, string> = {};
+        currentParams.forEach((value, key) => {
+          paramsObj[key] = value;
+        });
+
+        router.setQueryParams(paramsObj, { replace: true });
         processedRef.current = true;
         console.log('Parameters processed successfully', paramString);
         clearInterval(intervalId);
@@ -379,13 +387,12 @@ export default function useQueryParams({
       }
     };
   }, [
-    searchParams,
+    router,
     methods,
     textAreaRef,
     newQueryConvo,
     newConversation,
     submitMessage,
-    setSearchParams,
     queryClient,
     processSubmission,
   ]);

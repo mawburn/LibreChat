@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom';
 import { Button } from '~/components/ui';
 import { useLocalize } from '~/hooks';
+import { useRouterService } from '~/routes/RouterService';
 
 export default function NoPromptGroup() {
-  const navigate = useNavigate();
+  const router = useRouterService();
   const localize = useLocalize();
   return (
     <div className="relative min-h-full w-full px-4">
@@ -15,7 +15,7 @@ export default function NoPromptGroup() {
           <Button
             className="mt-4"
             onClick={() => {
-              navigate('/d/prompts');
+              router.navigateTo('/d/prompts');
             }}
           >
             {localize('com_ui_back_to_prompts')}

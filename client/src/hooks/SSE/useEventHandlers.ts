@@ -1,8 +1,9 @@
 import { v4 } from 'uuid';
 import { useCallback, useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { useRouterService } from '~/routes/RouterService';
+import { useTypedParams } from '~/routes/RouterService';
 import {
   QueryKeys,
   Constants,
@@ -173,11 +174,10 @@ export default function useEventHandlers({
   const { announcePolite } = useLiveAnnouncer();
   const applyAgentTemplate = useApplyNewAgentTemplate();
   const setAbortScroll = useSetRecoilState(store.abortScroll);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouterService();
 
   const lastAnnouncementTimeRef = useRef(Date.now());
-  const { conversationId: paramId } = useParams();
+  const { conversationId: paramId } = useTypedParams<{ conversationId: string }>();
   const { token } = useAuthContext();
 
   const contentHandler = useContentHandler({ setMessages, getMessages });
@@ -513,8 +513,9 @@ export default function useEventHandlers({
           }
           return update;
         });
-        if (location.pathname === '/c/new') {
-          navigate(`/c/${conversation.conversationId}`, { replace: true });
+        const currentPath = router.getCurrentPath();
+        if (currentPath === '/c/new') {
+          router.navigateTo(`/c/${conversation.conversationId}`, { replace: true });
         }
       }
 
@@ -531,8 +532,7 @@ export default function useEventHandlers({
       setIsSubmitting,
       setMessages,
       queryClient,
-      location.pathname,
-      navigate,
+      router,
     ],
   );
 

@@ -1,16 +1,16 @@
 import React from 'react';
 import { useApiErrorBoundary } from '~/hooks/ApiErrorBoundaryContext';
-import { useNavigate } from 'react-router-dom';
+import { useRouterService } from '~/routes/RouterService';
 
 const ApiErrorWatcher = () => {
   const { error } = useApiErrorBoundary();
-  const navigate = useNavigate();
+  const router = useRouterService();
   React.useEffect(() => {
     if (error?.response?.status === 500) {
       // do something with error
-      // navigate('/login');
+      // router.navigateTo('/login', { replace: true });
     }
-  }, [error, navigate]);
+  }, [error, router]);
 
   return null;
 };

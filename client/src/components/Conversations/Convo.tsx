@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { useParams } from 'react-router-dom';
 import { Constants } from 'librechat-data-provider';
 import type { TConversation } from 'librechat-data-provider';
 import { useNavigateToConvo, useMediaQuery, useLocalize } from '~/hooks';
@@ -10,6 +9,8 @@ import { useGetEndpointsQuery } from '~/data-provider';
 import { NotificationSeverity } from '~/common';
 import { ConvoOptions } from './ConvoOptions';
 import { useToastContext } from '~/Providers';
+import { useRouterService } from '~/routes/RouterService';
+import { useTypedParams } from '~/routes/RouterService';
 import RenameForm from './RenameForm';
 import ConvoLink from './ConvoLink';
 import { cn } from '~/utils';
@@ -28,7 +29,8 @@ export default function Conversation({
   toggleNav,
   isLatestConvo,
 }: ConversationProps) {
-  const params = useParams();
+  const params = useTypedParams();
+  const router = useRouterService();
   const localize = useLocalize();
   const { showToast } = useToastContext();
   const { navigateToConvo } = useNavigateToConvo();
@@ -102,9 +104,8 @@ export default function Conversation({
   const handleNavigation = (ctrlOrMetaKey: boolean) => {
     if (ctrlOrMetaKey) {
       toggleNav();
-      const baseUrl = window.location.origin;
       const path = `/c/${conversationId}`;
-      window.open(baseUrl + path, '_blank');
+      router.openNewWindow(router.buildShareableUrl(path));
       return;
     }
 

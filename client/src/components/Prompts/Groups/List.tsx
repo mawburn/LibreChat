@@ -1,5 +1,4 @@
 import { Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { PermissionTypes, Permissions } from 'librechat-data-provider';
 import type { TPromptGroup, TStartupConfig } from 'librechat-data-provider';
 import DashGroupItem from '~/components/Prompts/Groups/DashGroupItem';
@@ -7,6 +6,7 @@ import ChatGroupItem from '~/components/Prompts/Groups/ChatGroupItem';
 import { useGetStartupConfig } from '~/data-provider';
 import { useLocalize, useHasAccess } from '~/hooks';
 import { Button, Skeleton } from '~/components/ui';
+import { useRouterService } from '~/routes/RouterService';
 
 export default function List({
   groups = [],
@@ -17,7 +17,7 @@ export default function List({
   isChatRoute: boolean;
   isLoading: boolean;
 }) {
-  const navigate = useNavigate();
+  const router = useRouterService();
   const localize = useLocalize();
   const { data: startupConfig = {} as Partial<TStartupConfig> } = useGetStartupConfig();
   const { instanceProjectId } = startupConfig;
@@ -33,7 +33,7 @@ export default function List({
           <Button
             variant="outline"
             className={`w-full bg-transparent ${isChatRoute ? '' : 'mx-2'}`}
-            onClick={() => navigate('/d/prompts/new')}
+            onClick={() => router.navigateTo('/d/prompts/new')}
           >
             <Plus className="size-4" aria-hidden />
             {localize('com_ui_create_prompt')}

@@ -1,7 +1,7 @@
 import { useMemo, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { PermissionTypes, Permissions } from 'librechat-data-provider';
-import useTypedParams from '~/routes/hooks/useTypedParams';
+import { useTypedParams } from '~/routes/RouterService';
 import { useRouterService } from '~/routes/RouterService';
 import FilterPrompts from '~/components/Prompts/Groups/FilterPrompts';
 import DashBreadcrumb from '~/routes/Layouts/DashBreadcrumb';

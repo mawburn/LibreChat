@@ -1,8 +1,8 @@
 import { useMemo, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
 import { SystemRoles } from 'librechat-data-provider';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { ArrowLeft, MessageSquareQuote } from 'lucide-react';
+import { useRouterService } from '../RouterService';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -34,7 +34,7 @@ const getConversationId = (prevLocationPath: string) => {
 };
 
 export default function DashBreadcrumb() {
-  const location = useLocation();
+  const router = useRouterService();
   const localize = useLocalize();
   const { user } = useAuthContext();
   const { prevLocationPath } = useDashboardContext();
@@ -42,7 +42,6 @@ export default function DashBreadcrumb() {
 
   const setPromptsName = useSetRecoilState(store.promptsName);
   const setPromptsCategory = useSetRecoilState(store.promptsCategory);
-  const editorMode = useRecoilValue(store.promptsEditorMode);
 
   const clickCallback = useCallback(() => {
     setPromptsName('');
@@ -52,10 +51,8 @@ export default function DashBreadcrumb() {
   const chatLinkHandler = useCustomLink('/c/' + lastConversationId, clickCallback);
   const promptsLinkHandler = useCustomLink('/d/prompts');
 
-  const isPromptsPath = useMemo(
-    () => promptsPathPattern.test(location.pathname),
-    [location.pathname],
-  );
+  const currentPath = router.getCurrentPath();
+  const isPromptsPath = useMemo(() => promptsPathPattern.test(currentPath), [currentPath]);
 
   return (
     <div className="mr-2 mt-2 flex h-10 items-center justify-between">

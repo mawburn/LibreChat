@@ -2,12 +2,12 @@ import React, { useEffect, useCallback, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { visit } from 'unist-util-visit';
 import { useSetRecoilState } from 'recoil';
-import { useLocation } from 'react-router-dom';
 import type { Pluggable } from 'unified';
 import type { Artifact } from '~/common';
 import { useMessageContext, useArtifactContext } from '~/Providers';
 import { artifactsState } from '~/store/artifacts';
 import { logger, extractContent } from '~/utils';
+import { useRouterService } from '~/routes/RouterService';
 import ArtifactButton from './ArtifactButton';
 
 export const artifactPlugin: Pluggable = () => {
@@ -46,7 +46,7 @@ export function Artifact({
   children: React.ReactNode | { props: { children: React.ReactNode } };
   node: unknown;
 }) {
-  const location = useLocation();
+  const router = useRouterService();
   const { messageId } = useMessageContext();
   const { getNextIndex, resetCounter } = useArtifactContext();
   const artifactIndex = useRef(getNextIndex(false)).current;
@@ -88,7 +88,8 @@ export function Artifact({
         lastUpdateTime: now,
       };
 
-      if (!location.pathname.includes('/c/')) {
+      const currentPath = router.getCurrentPath();
+      if (!currentPath.includes('/c/')) {
         return setArtifact(currentArtifact);
       }
 
@@ -116,7 +117,7 @@ export function Artifact({
     props.identifier,
     messageId,
     artifactIndex,
-    location.pathname,
+    router,
   ]);
 
   useEffect(() => {

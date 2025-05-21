@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import type { TStartupConfig } from 'librechat-data-provider';
 import { useGetStartupConfig } from '~/data-provider';
 import AuthLayout from '~/components/Auth/AuthLayout';
 import { TranslationKeys, useLocalize } from '~/hooks';
+import { useRouterService } from '../RouterService';
 
 const headerMap: Record<string, TranslationKeys> = {
   '/login': 'com_auth_welcome_back',
@@ -25,26 +26,27 @@ export default function StartupLayout({ isAuthenticated }: { isAuthenticated?: b
     enabled: isAuthenticated ? startupConfig === null : true,
   });
   const localize = useLocalize();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouterService();
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/c/new', { replace: true });
+      router.navigateTo('/c/new', { replace: true });
     }
     if (data) {
       setStartupConfig(data);
     }
-  }, [isAuthenticated, navigate, data]);
+  }, [isAuthenticated, router, data]);
 
   useEffect(() => {
     document.title = startupConfig?.appTitle || 'LibreChat';
   }, [startupConfig?.appTitle]);
 
+  const currentPath = router.getCurrentPath();
+
   useEffect(() => {
     setError(null);
     setHeaderText(null);
-  }, [location.pathname]);
+  }, [currentPath]);
 
   const contextValue = {
     error,
@@ -58,11 +60,11 @@ export default function StartupLayout({ isAuthenticated }: { isAuthenticated?: b
 
   return (
     <AuthLayout
-      header={headerText ? localize(headerText) : localize(headerMap[location.pathname])}
+      header={headerText ? localize(headerText) : localize(headerMap[currentPath])}
       isFetching={isFetching}
       startupConfig={startupConfig}
       startupConfigError={startupConfigError}
-      pathname={location.pathname}
+      pathname={currentPath}
       error={error}
     >
       <Outlet context={contextValue} />

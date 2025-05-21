@@ -18,7 +18,6 @@ jest.mock('~/store', () => ({
 }));
 
 import { renderHook, act } from '@testing-library/react';
-import { useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRecoilValue } from 'recoil';
 import useQueryParams from './useQueryParams';
@@ -28,10 +27,6 @@ import useDefaultConvo from '~/hooks/Conversations/useDefaultConvo';
 import store from '~/store';
 
 // Other mocks
-jest.mock('react-router-dom', () => ({
-  useSearchParams: jest.fn(),
-}));
-
 jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn(),
 }));
@@ -82,19 +77,6 @@ jest.mock('librechat-data-provider', () => ({
   EModelEndpoint: { custom: 'custom', assistants: 'assistants', agents: 'agents' },
 }));
 
-// Mock global window.history
-global.window = Object.create(window);
-global.window.history = {
-  replaceState: jest.fn(),
-  pushState: jest.fn(),
-  go: jest.fn(),
-  back: jest.fn(),
-  forward: jest.fn(),
-  length: 1,
-  scrollRestoration: 'auto',
-  state: null,
-};
-
 describe('useQueryParams', () => {
   // Setup common mocks before each test
   beforeEach(() => {
@@ -102,10 +84,6 @@ describe('useQueryParams', () => {
 
     // Reset mock for window.history.replaceState
     jest.spyOn(window.history, 'replaceState').mockClear();
-
-    // Create mocks for all dependencies
-    const mockSearchParams = new URLSearchParams();
-    (useSearchParams as jest.Mock).mockReturnValue([mockSearchParams, jest.fn()]);
 
     const mockQueryClient = {
       getQueryData: jest.fn().mockImplementation((key) => {
@@ -156,11 +134,8 @@ describe('useQueryParams', () => {
 
   // Helper function to set URL parameters for testing
   const setUrlParams = (params: Record<string, string>) => {
-    const searchParams = new URLSearchParams();
-    Object.entries(params).forEach(([key, value]) => {
-      searchParams.set(key, value);
-    });
-    (useSearchParams as jest.Mock).mockReturnValue([searchParams, jest.fn()]);
+    // Use the global helper we added to setupTests.js
+    global.__updateSearchParams(params);
   };
 
   // Test cases remain the same
@@ -201,7 +176,7 @@ describe('useQueryParams', () => {
       'hello world',
       expect.objectContaining({ shouldValidate: true }),
     );
-    expect(window.history.replaceState).toHaveBeenCalled();
+    expect(global.__routerServiceMocks.setQueryParamsMock).toHaveBeenCalled();
   });
 
   it('should auto-submit message when submit=true and no settings to apply', () => {
@@ -447,9 +422,6 @@ describe('useQueryParams', () => {
     const mockHandleSubmit = jest.fn();
     const mockSubmitMessage = jest.fn();
 
-    // Force replaceState to be called
-    window.history.replaceState = jest.fn();
-
     (useChatFormContext as jest.Mock).mockReturnValue({
       setValue: mockSetValue,
       getValues: jest.fn().mockReturnValue(''),
@@ -484,6 +456,6 @@ describe('useQueryParams', () => {
     expect(mockSetValue).not.toHaveBeenCalled();
     expect(mockHandleSubmit).not.toHaveBeenCalled();
     expect(mockSubmitMessage).not.toHaveBeenCalled();
-    expect(window.history.replaceState).toHaveBeenCalled();
+    expect(global.__routerServiceMocks.setQueryParamsMock).toHaveBeenCalled();
   });
 });

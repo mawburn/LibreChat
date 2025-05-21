@@ -18,7 +18,7 @@ import type {
 import useBuildMessageTree from '~/hooks/Messages/useBuildMessageTree';
 import { useScreenshot } from '~/hooks/ScreenshotContext';
 import { cleanupPreset, buildTree } from '~/utils';
-import { useParams } from 'react-router-dom';
+import { useTypedParams } from '~/routes/RouterService';
 
 type ExportValues = {
   fieldName: string;
@@ -45,13 +45,14 @@ export default function useExportConversation({
   const { captureScreenshot } = useScreenshot();
   const buildMessageTree = useBuildMessageTree();
 
-  const { conversationId: paramId } = useParams();
+  const { conversationId: paramId } = useTypedParams<{ conversationId: string }>();
 
   const getMessageTree = useCallback(() => {
-    const queryParam = paramId === 'new' ? paramId : conversation?.conversationId ?? paramId ?? '';
+    const queryParam =
+      paramId === 'new' ? paramId : (conversation?.conversationId ?? paramId ?? '');
     const messages = queryClient.getQueryData<TMessage[]>([QueryKeys.messages, queryParam]) ?? [];
     const dataTree = buildTree({ messages });
-    return dataTree?.length === 0 ? null : dataTree ?? null;
+    return dataTree?.length === 0 ? null : (dataTree ?? null);
   }, [paramId, conversation?.conversationId, queryClient]);
 
   const getMessageText = (message: TMessage | undefined, format = 'text') => {
@@ -90,55 +91,67 @@ export default function useExportConversation({
 
     if (content.type === ContentTypes.ERROR) {
       // ERROR
-      return [sender, content[ContentTypes.TEXT].value];
+      const textContent = content[ContentTypes.TEXT];
+      if (textContent && typeof textContent === 'object' && 'value' in textContent) {
+        return [sender, textContent.value];
+      }
+      return [sender, String(textContent)];
     }
 
     if (content.type === ContentTypes.TEXT) {
       // TEXT
       const textPart = content[ContentTypes.TEXT];
-      const text = typeof textPart === 'string' ? textPart : textPart.value;
+      if (!textPart) {
+        return [sender, ''];
+      }
+      const text = typeof textPart === 'string' ? textPart : textPart.value || '';
       return [sender, text];
     }
 
     if (content.type === ContentTypes.TOOL_CALL) {
-      const type = content[ContentTypes.TOOL_CALL].type;
+      const toolCallContent = content[ContentTypes.TOOL_CALL];
+      if (!toolCallContent) {
+        return [sender, '{}'];
+      }
+
+      const type = toolCallContent.type;
 
       if (type === ToolCallTypes.CODE_INTERPRETER) {
         // CODE_INTERPRETER
-        const toolCall = content[ContentTypes.TOOL_CALL];
-        const code_interpreter = toolCall[ToolCallTypes.CODE_INTERPRETER];
-        return ['Code Interpreter', JSON.stringify(code_interpreter)];
+        const code_interpreter = toolCallContent[ToolCallTypes.CODE_INTERPRETER];
+        return ['Code Interpreter', JSON.stringify(code_interpreter || {})];
       }
 
       if (type === ToolCallTypes.RETRIEVAL) {
         // RETRIEVAL
-        const toolCall = content[ContentTypes.TOOL_CALL];
-        return ['Retrieval', JSON.stringify(toolCall)];
+        return ['Retrieval', JSON.stringify(toolCallContent || {})];
       }
 
       if (
         type === ToolCallTypes.FUNCTION &&
-        imageGenTools.has(content[ContentTypes.TOOL_CALL].function.name)
+        toolCallContent.function?.name &&
+        imageGenTools.has(toolCallContent.function.name)
       ) {
         // IMAGE_GENERATION
-        const toolCall = content[ContentTypes.TOOL_CALL];
-        return ['Tool', JSON.stringify(toolCall)];
+        return ['Tool', JSON.stringify(toolCallContent || {})];
       }
 
       if (type === ToolCallTypes.FUNCTION) {
         // IMAGE_VISION
-        const toolCall = content[ContentTypes.TOOL_CALL];
-        if (isImageVisionTool(toolCall)) {
-          return ['Tool', JSON.stringify(toolCall)];
+        if (isImageVisionTool(toolCallContent)) {
+          return ['Tool', JSON.stringify(toolCallContent || {})];
         }
-        return ['Tool', JSON.stringify(toolCall)];
+        return ['Tool', JSON.stringify(toolCallContent || {})];
       }
+
+      // Default for unknown tool call types
+      return ['Tool', JSON.stringify(toolCallContent || {})];
     }
 
     if (content.type === ContentTypes.IMAGE_FILE) {
       // IMAGE
       const imageFile = content[ContentTypes.IMAGE_FILE];
-      return ['Image', JSON.stringify(imageFile)];
+      return ['Image', JSON.stringify(imageFile || {})];
     }
 
     return [sender, JSON.stringify(content)];
@@ -159,19 +172,43 @@ export default function useExportConversation({
     const data: TMessage[] = [];
 
     const messages = await buildMessageTree({
-      messageId: conversation?.conversationId,
+      messageId: conversation?.conversationId || undefined,
       message: null,
       messages: getMessageTree(),
       branches: Boolean(exportBranches),
       recursive: false,
     });
 
-    if (Array.isArray(messages)) {
-      for (const message of messages) {
-        data.push(message);
+    if (messages) {
+      if (Array.isArray(messages)) {
+        for (const message of messages) {
+          if (message) {
+            // Make sure required fields exist to satisfy TMessage type
+            const completeMessage: TMessage = {
+              ...message,
+              messageId: message.messageId || '',
+              conversationId: message.conversationId || null,
+              parentMessageId: message.parentMessageId || null,
+              text: message.text || '',
+              isCreatedByUser: message.isCreatedByUser || false,
+              error: message.error || false,
+            };
+            data.push(completeMessage);
+          }
+        }
+      } else {
+        // Cast to TMessage with required fields
+        const completeMessage: TMessage = {
+          ...messages,
+          messageId: messages.messageId || '',
+          conversationId: messages.conversationId || null,
+          parentMessageId: messages.parentMessageId || null,
+          text: messages.text || '',
+          isCreatedByUser: messages.isCreatedByUser || false,
+          error: messages.error || false,
+        };
+        data.push(completeMessage);
       }
-    } else {
-      data.push(messages);
     }
 
     exportFromJSON({
@@ -219,12 +256,12 @@ export default function useExportConversation({
   const exportMarkdown = async () => {
     let data =
       '# Conversation\n' +
-      `- conversationId: ${conversation?.conversationId}\n` +
-      `- endpoint: ${conversation?.endpoint}\n` +
-      `- title: ${conversation?.title}\n` +
+      `- conversationId: ${conversation?.conversationId || 'N/A'}\n` +
+      `- endpoint: ${conversation?.endpoint || 'N/A'}\n` +
+      `- title: ${conversation?.title || 'Untitled'}\n` +
       `- exportAt: ${new Date().toTimeString()}\n`;
 
-    if (includeOptions === true) {
+    if (includeOptions === true && conversation) {
       data += '\n## Options\n';
       const options = cleanupPreset({ preset: conversation as TPreset });
 
@@ -233,8 +270,8 @@ export default function useExportConversation({
       }
     }
 
-    const messages = await buildMessageTree({
-      messageId: conversation?.conversationId,
+    const messagesResult = await buildMessageTree({
+      messageId: conversation?.conversationId || undefined,
       message: null,
       messages: getMessageTree(),
       branches: false,
@@ -242,8 +279,43 @@ export default function useExportConversation({
     });
 
     data += '\n## History\n';
-    if (Array.isArray(messages)) {
-      for (const message of messages) {
+    if (messagesResult) {
+      if (Array.isArray(messagesResult)) {
+        for (const partialMessage of messagesResult) {
+          if (partialMessage) {
+            // Ensure we have a complete message with required fields
+            const message = {
+              ...partialMessage,
+              messageId: partialMessage.messageId || '',
+              conversationId: partialMessage.conversationId || null,
+              parentMessageId: partialMessage.parentMessageId || null,
+              text: partialMessage.text || '',
+              isCreatedByUser: partialMessage.isCreatedByUser || false,
+              error: partialMessage.error || false,
+            };
+
+            data += `${getMessageText(message, 'md')}\n`;
+            if (message.error) {
+              data += '*(This is an error message)*\n';
+            }
+            if (message.unfinished === true) {
+              data += '*(This is an unfinished message)*\n';
+            }
+            data += '\n\n';
+          }
+        }
+      } else {
+        // Create a complete message for non-array result
+        const message = {
+          ...messagesResult,
+          messageId: messagesResult.messageId || '',
+          conversationId: messagesResult.conversationId || null,
+          parentMessageId: messagesResult.parentMessageId || null,
+          text: messagesResult.text || '',
+          isCreatedByUser: messagesResult.isCreatedByUser || false,
+          error: messagesResult.error || false,
+        };
+
         data += `${getMessageText(message, 'md')}\n`;
         if (message.error) {
           data += '*(This is an error message)*\n';
@@ -251,16 +323,9 @@ export default function useExportConversation({
         if (message.unfinished === true) {
           data += '*(This is an unfinished message)*\n';
         }
-        data += '\n\n';
       }
     } else {
-      data += `${getMessageText(messages, 'md')}\n`;
-      if (messages.error) {
-        data += '*(This is an error message)*\n';
-      }
-      if (messages.unfinished === true) {
-        data += '*(This is an unfinished message)*\n';
-      }
+      data += 'No messages found.\n';
     }
 
     exportFromJSON({
@@ -275,12 +340,12 @@ export default function useExportConversation({
     let data =
       'Conversation\n' +
       '########################\n' +
-      `conversationId: ${conversation?.conversationId}\n` +
-      `endpoint: ${conversation?.endpoint}\n` +
-      `title: ${conversation?.title}\n` +
+      `conversationId: ${conversation?.conversationId || 'N/A'}\n` +
+      `endpoint: ${conversation?.endpoint || 'N/A'}\n` +
+      `title: ${conversation?.title || 'Untitled'}\n` +
       `exportAt: ${new Date().toTimeString()}\n`;
 
-    if (includeOptions === true) {
+    if (includeOptions === true && conversation) {
       data += '\nOptions\n########################\n';
       const options = cleanupPreset({ preset: conversation as TPreset });
 
@@ -289,8 +354,8 @@ export default function useExportConversation({
       }
     }
 
-    const messages = await buildMessageTree({
-      messageId: conversation?.conversationId,
+    const messagesResult = await buildMessageTree({
+      messageId: conversation?.conversationId || undefined,
       message: null,
       messages: getMessageTree(),
       branches: false,
@@ -298,8 +363,43 @@ export default function useExportConversation({
     });
 
     data += '\nHistory\n########################\n';
-    if (Array.isArray(messages)) {
-      for (const message of messages) {
+    if (messagesResult) {
+      if (Array.isArray(messagesResult)) {
+        for (const partialMessage of messagesResult) {
+          if (partialMessage) {
+            // Create a complete message object
+            const message = {
+              ...partialMessage,
+              messageId: partialMessage.messageId || '',
+              conversationId: partialMessage.conversationId || null,
+              parentMessageId: partialMessage.parentMessageId || null,
+              text: partialMessage.text || '',
+              isCreatedByUser: partialMessage.isCreatedByUser || false,
+              error: partialMessage.error || false,
+            };
+
+            data += `${getMessageText(message)}\n`;
+            if (message.error) {
+              data += '(This is an error message)\n';
+            }
+            if (message.unfinished === true) {
+              data += '(This is an unfinished message)\n';
+            }
+            data += '\n\n';
+          }
+        }
+      } else {
+        // Create a complete message for non-array result
+        const message = {
+          ...messagesResult,
+          messageId: messagesResult.messageId || '',
+          conversationId: messagesResult.conversationId || null,
+          parentMessageId: messagesResult.parentMessageId || null,
+          text: messagesResult.text || '',
+          isCreatedByUser: messagesResult.isCreatedByUser || false,
+          error: messagesResult.error || false,
+        };
+
         data += `${getMessageText(message)}\n`;
         if (message.error) {
           data += '(This is an error message)\n';
@@ -307,16 +407,9 @@ export default function useExportConversation({
         if (message.unfinished === true) {
           data += '(This is an unfinished message)\n';
         }
-        data += '\n\n';
       }
     } else {
-      data += `${getMessageText(messages)}\n`;
-      if (messages.error) {
-        data += '(This is an error message)\n';
-      }
-      if (messages.unfinished === true) {
-        data += '(This is an unfinished message)\n';
-      }
+      data += 'No messages found.\n';
     }
 
     exportFromJSON({
@@ -328,31 +421,95 @@ export default function useExportConversation({
   };
 
   const exportJSON = async () => {
-    const data = {
-      conversationId: conversation?.conversationId,
-      endpoint: conversation?.endpoint,
-      title: conversation?.title,
+    const data: Record<string, any> = {
+      conversationId: conversation?.conversationId || null,
+      endpoint: conversation?.endpoint || null,
+      title: conversation?.title || null,
       exportAt: new Date().toTimeString(),
       branches: exportBranches,
       recursive: recursive,
     };
 
-    if (includeOptions === true) {
+    if (includeOptions === true && conversation) {
       data['options'] = cleanupPreset({ preset: conversation as TPreset });
     }
 
-    const messages = await buildMessageTree({
-      messageId: conversation?.conversationId,
+    const messagesResult = await buildMessageTree({
+      messageId: conversation?.conversationId || undefined,
       message: null,
       messages: getMessageTree(),
       branches: Boolean(exportBranches),
       recursive: Boolean(recursive),
     });
 
-    if (recursive === true && !Array.isArray(messages)) {
-      data['messagesTree'] = messages.children;
+    if (messagesResult) {
+      if (recursive === true && !Array.isArray(messagesResult) && 'children' in messagesResult) {
+        // Create a properly typed complete message
+        const processedMessage = {
+          ...messagesResult,
+          messageId: messagesResult.messageId || '',
+          conversationId: messagesResult.conversationId || null,
+          parentMessageId: messagesResult.parentMessageId || null,
+          text: messagesResult.text || '',
+          isCreatedByUser: messagesResult.isCreatedByUser || false,
+          error: messagesResult.error || false,
+        };
+
+        // Process children to ensure they all have the required fields
+        const processedChildren = Array.isArray(messagesResult.children)
+          ? messagesResult.children
+              .map((child) => {
+                if (!child) return null;
+                return {
+                  ...child,
+                  messageId: child.messageId || '',
+                  conversationId: child.conversationId || null,
+                  parentMessageId: child.parentMessageId || null,
+                  text: child.text || '',
+                  isCreatedByUser: child.isCreatedByUser || false,
+                  error: child.error || false,
+                };
+              })
+              .filter(Boolean)
+          : [];
+
+        data['messagesTree'] = processedChildren;
+      } else {
+        // For array type results, ensure each message is complete
+        if (Array.isArray(messagesResult)) {
+          const processedMessages = messagesResult
+            .map((message) => {
+              if (!message) return null;
+              return {
+                ...message,
+                messageId: message.messageId || '',
+                conversationId: message.conversationId || null,
+                parentMessageId: message.parentMessageId || null,
+                text: message.text || '',
+                isCreatedByUser: message.isCreatedByUser || false,
+                error: message.error || false,
+              };
+            })
+            .filter(Boolean);
+
+          data['messages'] = processedMessages;
+        } else {
+          // Single message that's not in an array
+          const processedMessage = {
+            ...messagesResult,
+            messageId: messagesResult.messageId || '',
+            conversationId: messagesResult.conversationId || null,
+            parentMessageId: messagesResult.parentMessageId || null,
+            text: messagesResult.text || '',
+            isCreatedByUser: messagesResult.isCreatedByUser || false,
+            error: messagesResult.error || false,
+          };
+
+          data['messages'] = [processedMessage];
+        }
+      }
     } else {
-      data['messages'] = messages;
+      data['messages'] = [];
     }
 
     exportFromJSON({

@@ -1,7 +1,7 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+/* eslint-disable i18next/no-literal-string */
 import { TVectorStore } from '~/common';
 import { DotsIcon, TrashIcon } from '~/components/svg';
+import { useRouterService } from '~/routes/RouterService';
 import { Button } from '~/components/ui';
 
 type VectorStoreListItemProps = {
@@ -13,11 +13,11 @@ export default function VectorStoreListItem({
   vectorStore,
   deleteVectorStore,
 }: VectorStoreListItemProps) {
-  const navigate = useNavigate();
+  const router = useRouterService();
   return (
     <div
       onClick={() => {
-        navigate('vs_id_abcdef');
+        router.navigateTo('vs_id_abcdef');
       }}
       className="w-100 mt-2 flex cursor-pointer flex-row justify-around rounded-md border border-0 bg-white p-4 transition duration-300 ease-in-out hover:bg-slate-200"
     >
@@ -27,7 +27,8 @@ export default function VectorStoreListItem({
       </div>
       <div className="w-2/6 text-gray-500">
         <p>
-          {vectorStore.file_counts.total} Files ({vectorStore.bytes / 1000}KB)
+          {vectorStore.file_counts?.total} Files ({vectorStore.bytes ? vectorStore.bytes / 1000 : 0}
+          KB)
         </p>
         <p className="text-sm">{vectorStore.created_at.toString()}</p>
       </div>

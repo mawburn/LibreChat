@@ -8,7 +8,6 @@ import {
   createContext,
   useRef,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { setTokenHeader, SystemRoles } from 'librechat-data-provider';
 import type * as t from 'librechat-data-provider';
@@ -46,7 +45,6 @@ const AuthContextProvider = ({
     enabled: !!(isAuthenticated && user?.role === SystemRoles.ADMIN),
   });
 
-  const navigate = useNavigate();
   const router = useRouterService();
 
   const setUserContext = useCallback(
@@ -79,7 +77,7 @@ const AuthContextProvider = ({
       const { user, token, twoFAPending, tempToken } = data;
       if (twoFAPending) {
         // Redirect to the two-factor authentication route.
-        navigate(`/login/2fa?tempToken=${tempToken}`, { replace: true });
+        router.navigateTo(`/login/2fa?tempToken=${tempToken}`, { replace: true });
         return;
       }
       setError(undefined);
@@ -88,7 +86,10 @@ const AuthContextProvider = ({
     onError: (error: TResError | unknown) => {
       const resError = error as TResError;
       doSetError(resError.message);
-      navigate('/login', { replace: true });
+      const currentPath = router.getCurrentPath();
+      if (!currentPath.includes('/login')) {
+        router.navigateTo('/login', { replace: true });
+      }
     },
   });
   const logoutUser = useLogoutUserMutation({
@@ -146,7 +147,10 @@ const AuthContextProvider = ({
           if (authConfig?.test === true) {
             return;
           }
-          navigate('/login');
+          const currentPath = router.getCurrentPath();
+          if (!currentPath.includes('/login')) {
+            router.navigateTo('/login', { replace: true });
+          }
         }
       },
       onError: (error) => {
@@ -154,17 +158,23 @@ const AuthContextProvider = ({
         if (authConfig?.test === true) {
           return;
         }
-        navigate('/login');
+        const currentPath = router.getCurrentPath();
+        if (!currentPath.includes('/login')) {
+          router.navigateTo('/login', { replace: true });
+        }
       },
     });
-  }, [authConfig?.test, navigate, refreshToken, setUserContext]);
+  }, [authConfig?.test, router, refreshToken, setUserContext]);
 
   useEffect(() => {
     if (userQuery.data) {
       setUser(userQuery.data);
     } else if (userQuery.isError) {
       doSetError((userQuery.error as Error).message);
-      navigate('/login', { replace: true });
+      const currentPath = router.getCurrentPath();
+      if (!currentPath.includes('/login')) {
+        router.navigateTo('/login', { replace: true });
+      }
     }
     if (error != null && error && isAuthenticated) {
       doSetError(undefined);
@@ -180,7 +190,7 @@ const AuthContextProvider = ({
     userQuery.error,
     error,
     setUser,
-    navigate,
+    router,
     silentRefresh,
     setUserContext,
     doSetError,

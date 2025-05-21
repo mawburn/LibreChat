@@ -2,7 +2,7 @@ import React from 'react';
 import VectorStoreSidePanel from './VectorStore/VectorStoreSidePanel';
 import { Outlet } from 'react-router-dom';
 import { useRouterService } from '~/routes/RouterService';
-import useTypedParams from '~/routes/hooks/useTypedParams';
+import { useTypedParams } from '~/routes/RouterService';
 import { useLocalize } from '~/hooks';
 import { Button } from '../ui';
 

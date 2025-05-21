@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGetModelsQuery } from 'librechat-data-provider/react-query';
 import {
   Constants,
@@ -9,6 +8,7 @@ import {
   LocalStorageKeys,
   isAssistantsEndpoint,
 } from 'librechat-data-provider';
+import { useRouterService } from '~/routes/RouterService';
 import { useRecoilState, useRecoilValue, useSetRecoilState, useRecoilCallback } from 'recoil';
 import type {
   TPreset,
@@ -34,8 +34,7 @@ import { logger } from '~/utils';
 import store from '~/store';
 
 const useNewConvo = (index = 0) => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const router = useRouterService();
   const { data: startupConfig } = useGetStartupConfig();
   const clearAllConversations = store.useClearConvoState();
   const defaultPreset = useRecoilValue(store.defaultPreset);
@@ -185,21 +184,21 @@ const useNewConvo = (index = 0) => {
           return;
         }
 
-        const searchParamsString = searchParams?.toString();
-        const getParams = () => (searchParamsString ? `?${searchParamsString}` : '');
+        const searchParams = router.getSearchParams();
+        const queryString = searchParams.toString() ? `?${searchParams.toString()}` : '';
 
         if (conversation.conversationId === Constants.NEW_CONVO && !modelsData) {
           const appTitle = localStorage.getItem(LocalStorageKeys.APP_TITLE) ?? '';
           if (appTitle) {
             document.title = appTitle;
           }
-          const path = `/c/${Constants.NEW_CONVO}${getParams()}`;
-          navigate(path, { state: { focusChat: true } });
+          const path = `/c/${Constants.NEW_CONVO}${queryString}`;
+          router.navigateTo(path, { state: { focusChat: true } });
           return;
         }
 
-        const path = `/c/${conversation.conversationId}${getParams()}`;
-        navigate(path, {
+        const path = `/c/${conversation.conversationId}${queryString}`;
+        router.navigateTo(path, {
           replace: true,
           state: disableFocus ? {} : { focusChat: true },
         });

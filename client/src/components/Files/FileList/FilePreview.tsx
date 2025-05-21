@@ -1,3 +1,4 @@
+/* eslint-disable i18next/no-literal-string */
 import { TFile } from 'librechat-data-provider/dist/types';
 import React, { useState } from 'react';
 import { TThread, TVectorStore } from '~/common';
@@ -6,7 +7,7 @@ import { Button } from '~/components/ui';
 import DeleteIconButton from '../DeleteIconButton';
 import VectorStoreButton from '../VectorStore/VectorStoreButton';
 import { CircleIcon, Clock3Icon, InfoIcon } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { useTypedParams } from '~/routes/RouterService';
 
 const tempFile: TFile = {
   filename: 'File1.jpg',
@@ -42,7 +43,7 @@ export default function FilePreview() {
   const [file, setFile] = useState(tempFile);
   const [threads, setThreads] = useState(tempThreads);
   const [vectorStoresAttached, setVectorStoresAttached] = useState(tempVectorStoresAttached);
-  const params = useParams();
+  const params = useTypedParams<{ fileId: string }>();
 
   return (
     <div className="m-3 bg-white p-2 sm:p-4 md:p-6 lg:p-10">

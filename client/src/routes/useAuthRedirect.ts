@@ -1,22 +1,25 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouterService } from './RouterService';
 import { useAuthContext } from '~/hooks';
 
 export default function useAuthRedirect() {
   const { user, isAuthenticated } = useAuthContext();
-  const navigate = useNavigate();
+  const router = useRouterService();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (!isAuthenticated) {
-        navigate('/login', { replace: true });
+        const currentPath = router.getCurrentPath();
+        if (!currentPath.includes('/login')) {
+          router.navigateTo('/login', { replace: true });
+        }
       }
     }, 300);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, router]);
 
   return {
     user,

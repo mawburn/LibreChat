@@ -1,16 +1,17 @@
 import { useEffect, useRef } from 'react';
 import debounce from 'lodash/debounce';
-import { useLocation } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState, useResetRecoilState } from 'recoil';
 import type { Artifact } from '~/common';
 import FilePreview from '~/components/Chat/Input/Files/FilePreview';
 import { getFileType, logger } from '~/utils';
 import { useLocalize } from '~/hooks';
+import { useRouterService } from '~/routes/RouterService';
 import store from '~/store';
 
 const ArtifactButton = ({ artifact }: { artifact: Artifact | null }) => {
   const localize = useLocalize();
-  const location = useLocation();
+  const router = useRouterService();
+  const currentPath = router.getCurrentPath();
   const setVisible = useSetRecoilState(store.artifactsVisibility);
   const [artifacts, setArtifacts] = useRecoilState(store.artifactsState);
   const setCurrentArtifactId = useSetRecoilState(store.currentArtifactId);
@@ -36,7 +37,7 @@ const ArtifactButton = ({ artifact }: { artifact: Artifact | null }) => {
       return;
     }
 
-    if (!location.pathname.includes('/c/')) {
+    if (!currentPath.includes('/c/')) {
       return;
     }
 
@@ -45,7 +46,7 @@ const ArtifactButton = ({ artifact }: { artifact: Artifact | null }) => {
     return () => {
       debouncedSetVisible.cancel();
     };
-  }, [artifact, location.pathname]);
+  }, [artifact, currentPath]);
 
   if (artifact === null || artifact === undefined) {
     return null;
@@ -57,7 +58,8 @@ const ArtifactButton = ({ artifact }: { artifact: Artifact | null }) => {
       <button
         type="button"
         onClick={() => {
-          if (!location.pathname.includes('/c/')) {
+          const path = router.getCurrentPath();
+          if (!path.includes('/c/')) {
             return;
           }
           resetCurrentArtifactId();

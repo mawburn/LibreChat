@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { LocalStorageKeys, PermissionTypes, Permissions } from 'librechat-data-provider';
+import { useRouterService } from '~/routes/RouterService';
 import CategorySelector from '~/components/Prompts/Groups/CategorySelector';
 import PromptVariables from '~/components/Prompts/PromptVariables';
 import { Button, TextareaAutosize, Input } from '~/components/ui';
@@ -36,7 +36,7 @@ const CreatePromptForm = ({
   defaultValues?: CreateFormValues;
 }) => {
   const localize = useLocalize();
-  const navigate = useNavigate();
+  const router = useRouterService();
   const hasAccess = useHasAccess({
     permissionType: PermissionTypes.PROMPTS,
     permission: Permissions.CREATE,
@@ -46,13 +46,13 @@ const CreatePromptForm = ({
     let timeoutId: ReturnType<typeof setTimeout>;
     if (!hasAccess) {
       timeoutId = setTimeout(() => {
-        navigate('/c/new');
+        router.navigateTo('/c/new');
       }, 1000);
     }
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [hasAccess, navigate]);
+  }, [hasAccess, router]);
 
   const methods = useForm({
     defaultValues: {
@@ -70,7 +70,7 @@ const CreatePromptForm = ({
 
   const createPromptMutation = useCreatePrompt({
     onSuccess: (response) => {
-      navigate(`/d/prompts/${response.prompt.groupId}`, { replace: true });
+      router.navigateTo(`/d/prompts/${response.prompt.groupId}`, { replace: true });
     },
   });
 

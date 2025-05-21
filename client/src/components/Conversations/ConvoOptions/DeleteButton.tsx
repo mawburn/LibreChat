@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
-import { useParams, useNavigate } from 'react-router-dom';
 import type { TMessage } from 'librechat-data-provider';
+import { useRouterService } from '~/routes/RouterService';
+import { useTypedParams } from '~/routes/RouterService';
 import {
   Button,
   Spinner,
@@ -40,18 +41,18 @@ export function DeleteConversationDialog({
   title: string;
 }) {
   const localize = useLocalize();
-  const navigate = useNavigate();
+  const router = useRouterService();
   const queryClient = useQueryClient();
   const { showToast } = useToastContext();
   const { newConversation } = useNewConvo();
-  const { conversationId: currentConvoId } = useParams();
+  const { conversationId: currentConvoId } = useTypedParams<{ conversationId: string }>();
 
   const deleteMutation = useDeleteConversationMutation({
     onSuccess: () => {
       setShowDeleteDialog(false);
       if (currentConvoId === conversationId || currentConvoId === 'new') {
         newConversation();
-        navigate('/c/new', { replace: true });
+        router.navigateTo('/c/new', { replace: true });
       }
       setMenuOpen?.(false);
       retainView();

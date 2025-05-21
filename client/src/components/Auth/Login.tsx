@@ -1,4 +1,4 @@
-import { useOutletContext, useSearchParams } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '~/hooks/AuthContext';
 import type { TLoginLayoutContext } from '~/common';
@@ -15,8 +15,7 @@ function Login() {
   const { error, setError, login } = useAuthContext();
   const { startupConfig } = useOutletContext<TLoginLayoutContext>();
   const router = useRouterService();
-
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = router.getSearchParams();
   // Determine if auto-redirect should be disabled based on the URL parameter
   const disableAutoRedirect = searchParams.get('redirect') === 'false';
 
@@ -27,11 +26,9 @@ function Login() {
   useEffect(() => {
     if (disableAutoRedirect) {
       setIsAutoRedirectDisabled(true);
-      const newParams = new URLSearchParams(searchParams);
-      newParams.delete('redirect');
-      setSearchParams(newParams, { replace: true });
+      router.setQueryParams({ redirect: '' }, { replace: true });
     }
-  }, [disableAutoRedirect, searchParams, setSearchParams]);
+  }, [disableAutoRedirect, router]);
 
   // Determine whether we should auto-redirect to OpenID.
   const shouldAutoRedirect =

@@ -1,13 +1,15 @@
 import React from 'react';
 import FileSidePanel from './FileList/FileSidePanel';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import FilesSectionSelector from './FilesSectionSelector';
 import { useLocalize } from '~/hooks';
+import { useRouterService } from '~/routes/RouterService';
+import { useTypedParams } from '~/routes/RouterService';
 import { Button } from '../ui';
 
 export default function FilesListView() {
-  const params = useParams();
-  const navigate = useNavigate();
+  const params = useTypedParams<{ fileId: string }>();
+  const router = useRouterService();
   const localize = useLocalize();
   return (
     <div className="bg-[#f9f9f9] p-0 lg:p-7">
@@ -19,7 +21,7 @@ export default function FilesListView() {
             variant={'outline'}
             size={'sm'}
             onClick={() => {
-              navigate('/d/files');
+              router.navigateTo('/d/files');
             }}
           >
             {localize('com_ui_go_back')}

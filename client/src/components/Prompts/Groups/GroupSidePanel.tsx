@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useRouterService } from '~/routes/RouterService';
 import PanelNavigation from '~/components/Prompts/Groups/PanelNavigation';
 import { useMediaQuery, usePromptGroupsNav } from '~/hooks';
 import List from '~/components/Prompts/Groups/List';
@@ -22,9 +22,10 @@ export default function GroupSidePanel({
   isDetailView?: boolean;
   className?: string;
 } & ReturnType<typeof usePromptGroupsNav>) {
-  const location = useLocation();
+  const router = useRouterService();
   const isSmallerScreen = useMediaQuery('(max-width: 1024px)');
-  const isChatRoute = useMemo(() => location.pathname?.startsWith('/c/'), [location.pathname]);
+  const currentPath = router.getCurrentPath();
+  const isChatRoute = useMemo(() => currentPath?.startsWith('/c/'), [currentPath]);
 
   return (
     <div

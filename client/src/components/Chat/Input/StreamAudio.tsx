@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import { useEffect, useCallback } from 'react';
 import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
@@ -8,6 +7,7 @@ import { useCustomAudioRef, MediaSourceAppender, usePauseGlobalAudio } from '~/h
 import { getLatestText, logger } from '~/utils';
 import { useAuthContext } from '~/hooks';
 import { globalAudioId } from '~/common';
+import { useTypedParams } from '~/routes/RouterService';
 import store from '~/store';
 
 function timeoutPromise(ms: number, message?: string) {
@@ -38,8 +38,8 @@ export default function StreamAudio({ index = 0 }) {
   const { audioRef } = useCustomAudioRef({ setIsPlaying });
   const { pauseGlobalAudio } = usePauseGlobalAudio();
 
-  const { conversationId: paramId } = useParams();
-  const queryParam = paramId === 'new' ? paramId : latestMessage?.conversationId ?? paramId ?? '';
+  const { conversationId: paramId } = useTypedParams<{ conversationId: string }>();
+  const queryParam = paramId === 'new' ? paramId : (latestMessage?.conversationId ?? paramId ?? '');
 
   const queryClient = useQueryClient();
   const getMessages = useCallback(

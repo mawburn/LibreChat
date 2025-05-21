@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot, Label } from '~/components';
@@ -20,10 +19,10 @@ type TwoFactorFormInputs = {
 };
 
 const TwoFactorScreen: React.FC = React.memo(() => {
-  const [searchParams] = useSearchParams();
+  const router = useRouterService();
+  const searchParams = router.getSearchParams();
   const tempTokenRaw = searchParams.get('tempToken');
   const tempToken = tempTokenRaw !== null && tempTokenRaw !== '' ? tempTokenRaw : '';
-  const router = useRouterService();
 
   const {
     control,

@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
-import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { QueryKeys, Constants } from 'librechat-data-provider';
 import type { TMessage, TStartupConfig } from 'librechat-data-provider';
@@ -8,6 +7,7 @@ import { NewChatIcon, MobileSidebar, Sidebar } from '~/components/svg';
 import { getDefaultModelSpec, getModelSpecPreset } from '~/utils';
 import { TooltipAnchor, Button } from '~/components/ui';
 import { useLocalize, useNewConvo } from '~/hooks';
+import { useRouterService } from '~/routes/RouterService';
 import store from '~/store';
 
 export default function NewChat({
@@ -26,14 +26,14 @@ export default function NewChat({
   const queryClient = useQueryClient();
   /** Note: this component needs an explicit index passed if using more than one */
   const { newConversation: newConvo } = useNewConvo(index);
-  const navigate = useNavigate();
+  const router = useRouterService();
   const localize = useLocalize();
   const { conversation } = store.useCreateConversationAtom(index);
 
   const clickHandler: React.MouseEventHandler<HTMLButtonElement> = useCallback(
     (e) => {
       if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
-        window.open('/c/new', '_blank');
+        router.openNewWindow(router.buildShareableUrl('/c/new'));
         return;
       }
       queryClient.setQueryData<TMessage[]>(
@@ -42,12 +42,12 @@ export default function NewChat({
       );
       queryClient.invalidateQueries([QueryKeys.messages]);
       newConvo();
-      navigate('/c/new', { state: { focusChat: true } });
+      router.navigateTo('/c/new', { state: { focusChat: true } });
       if (isSmallScreen) {
         toggleNav();
       }
     },
-    [queryClient, conversation, newConvo, navigate, toggleNav, isSmallScreen],
+    [queryClient, conversation, newConvo, router, toggleNav, isSmallScreen],
   );
 
   return (

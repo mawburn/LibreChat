@@ -1,7 +1,8 @@
 import { memo, useState, useRef, useMemo, useCallback, KeyboardEvent } from 'react';
 import { EarthIcon, Pen } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { SystemRoles, type TPromptGroup } from 'librechat-data-provider';
+import { useRouterService } from '~/routes/RouterService';
+import { useTypedParams } from '~/routes/RouterService';
 import { useDeletePromptGroup, useUpdatePromptGroup } from '~/data-provider';
 import { Input, Label, Button, OGDialog, OGDialogTrigger } from '~/components/ui';
 import CategoryIcon from '~/components/Prompts/Groups/CategoryIcon';
@@ -16,8 +17,8 @@ interface DashGroupItemProps {
 }
 
 function DashGroupItemComponent({ group, instanceProjectId }: DashGroupItemProps) {
-  const params = useParams();
-  const navigate = useNavigate();
+  const params = useTypedParams<{ promptId: string }>();
+  const router = useRouterService();
   const localize = useLocalize();
   const { user } = useAuthContext();
 
@@ -41,7 +42,7 @@ function DashGroupItemComponent({ group, instanceProjectId }: DashGroupItemProps
   const deleteGroup = useDeletePromptGroup({
     onSuccess: (_response, variables) => {
       if (variables.id === group._id) {
-        navigate('/d/prompts');
+        router.navigateTo('/d/prompts');
       }
     },
   });
@@ -57,10 +58,10 @@ function DashGroupItemComponent({ group, instanceProjectId }: DashGroupItemProps
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (e.key === 'Enter') {
         e.preventDefault();
-        navigate(`/d/prompts/${group._id}`, { replace: true });
+        router.navigateTo(`/d/prompts/${group._id}`, { replace: true });
       }
     },
-    [group._id, navigate],
+    [group._id, router],
   );
 
   const triggerDelete = useCallback(() => {
@@ -68,8 +69,8 @@ function DashGroupItemComponent({ group, instanceProjectId }: DashGroupItemProps
   }, [group._id, deleteGroup]);
 
   const handleContainerClick = useCallback(() => {
-    navigate(`/d/prompts/${group._id}`, { replace: true });
-  }, [group._id, navigate]);
+    router.navigateTo(`/d/prompts/${group._id}`, { replace: true });
+  }, [group._id, router]);
 
   return (
     <div

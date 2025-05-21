@@ -1,16 +1,16 @@
-import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { buttonVariants } from '~/components/ui';
 import { useLocalize } from '~/hooks';
+import { useRouterService } from '~/routes/RouterService';
 import { cn } from '~/utils';
 
 export default function BackToChat({ className }: { className?: string }) {
-  const navigate = useNavigate();
+  const router = useRouterService();
   const localize = useLocalize();
   const clickHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (event.button === 0 && !(event.ctrlKey || event.metaKey)) {
       event.preventDefault();
-      navigate('/c/new');
+      router.navigateTo('/c/new');
     }
   };
   return (

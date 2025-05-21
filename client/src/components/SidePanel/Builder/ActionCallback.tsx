@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { AuthTypeEnum } from 'librechat-data-provider';
 import { useLocalize, useCopyToClipboard } from '~/hooks';
 import { useToastContext } from '~/Providers';
+import { useRouterService } from '~/routes/RouterService';
 import { Button } from '~/components/ui';
 import { cn } from '~/utils';
 
@@ -11,8 +12,9 @@ export default function ActionCallback({ action_id }: { action_id?: string }) {
   const localize = useLocalize();
   const { watch } = useFormContext();
   const { showToast } = useToastContext();
+  const router = useRouterService();
   const [isCopying, setIsCopying] = useState(false);
-  const callbackURL = `${window.location.protocol}//${window.location.host}/api/actions/${action_id}/oauth/callback`;
+  const callbackURL = router.buildShareableUrl(`/api/actions/${action_id}/oauth/callback`);
   const copyLink = useCopyToClipboard({ text: callbackURL });
 
   if (!action_id) {

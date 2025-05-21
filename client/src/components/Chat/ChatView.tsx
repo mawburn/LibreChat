@@ -2,7 +2,7 @@ import { memo, useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useForm } from 'react-hook-form';
 import { Constants } from 'librechat-data-provider';
-import useTypedParams from '~/routes/hooks/useTypedParams';
+import { useTypedParams } from '~/routes/RouterService';
 import type { TMessage } from 'librechat-data-provider';
 import type { ChatFormValues } from '~/common';
 import { ChatContext, AddedChatContext, useFileMapContext, ChatFormProvider } from '~/Providers';

@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import type { Location } from 'react-router-dom';
+import { useRouterService } from '~/routes/RouterService';
 
 export function useCustomLink<T = HTMLAnchorElement>(
   route: string,
   callback?: (event: React.MouseEvent<T>) => void,
 ) {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouterService();
   const clickHandler = useCallback(
     (event: React.MouseEvent<T>) => {
       if (callback) {
@@ -15,16 +14,18 @@ export function useCustomLink<T = HTMLAnchorElement>(
       }
       if (event.button === 0 && !(event.ctrlKey || event.metaKey)) {
         event.preventDefault();
-        navigate(route, { state: { prevLocation: location } });
+        const currentLocation = router.getCurrentLocation();
+        router.navigateTo(route, { state: { prevLocation: currentLocation } });
       }
     },
-    [navigate, route, callback, location],
+    [router, route, callback],
   );
   return clickHandler;
 }
 
 export const usePreviousLocation = () => {
-  const location = useLocation();
+  const router = useRouterService();
+  const location = router.getCurrentLocation();
   const previousLocationRef: React.MutableRefObject<Location<unknown> | undefined> = useRef();
 
   useEffect(() => {
