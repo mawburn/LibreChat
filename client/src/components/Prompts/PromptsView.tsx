@@ -1,6 +1,8 @@
 import { useMemo, useEffect } from 'react';
-import { Outlet, useParams, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { PermissionTypes, Permissions } from 'librechat-data-provider';
+import useTypedParams from '~/routes/hooks/useTypedParams';
+import { useRouterService } from '~/routes/RouterService';
 import FilterPrompts from '~/components/Prompts/Groups/FilterPrompts';
 import DashBreadcrumb from '~/routes/Layouts/DashBreadcrumb';
 import { usePromptGroupsNav, useHasAccess } from '~/hooks';
@@ -8,8 +10,8 @@ import GroupSidePanel from './Groups/GroupSidePanel';
 import { cn } from '~/utils';
 
 export default function PromptsView() {
-  const params = useParams();
-  const navigate = useNavigate();
+  const params = useTypedParams<{ promptId: string }>();
+  const router = useRouterService();
   const groupsNav = usePromptGroupsNav();
   const isDetailView = useMemo(() => !!(params.promptId || params['*'] === 'new'), [params]);
   const hasAccess = useHasAccess({
@@ -21,13 +23,13 @@ export default function PromptsView() {
     let timeoutId: ReturnType<typeof setTimeout>;
     if (!hasAccess) {
       timeoutId = setTimeout(() => {
-        navigate('/c/new');
+        router.navigateTo('/c/new');
       }, 1000);
     }
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [hasAccess, navigate]);
+  }, [hasAccess, router]);
 
   if (!hasAccess) {
     return null;

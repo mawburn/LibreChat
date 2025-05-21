@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useRouterService } from '~/routes/RouterService';
 import { logger } from '~/utils';
 
 export default function useFocusChatEffect(textAreaRef: React.RefObject<HTMLTextAreaElement>) {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const router = useRouterService();
   useEffect(() => {
+    const location = router.getCurrentLocation();
     if (textAreaRef?.current && location.state?.focusChat) {
       logger.log(
         'conversation',
@@ -17,10 +17,12 @@ export default function useFocusChatEffect(textAreaRef: React.RefObject<HTMLText
         textAreaRef.current?.focus();
       }
 
-      navigate(`${location.pathname}${window.location.search ?? ''}`, {
+      const search = router.getSearchParams().toString();
+      const queryString = search ? `?${search}` : '';
+      router.navigateTo(`${location.pathname}${queryString}`, {
         replace: true,
         state: {},
       });
     }
-  }, [navigate, textAreaRef, location.pathname, location.state?.focusChat]);
+  }, [router, textAreaRef]);
 }

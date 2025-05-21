@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { setTokenHeader, SystemRoles } from 'librechat-data-provider';
 import type * as t from 'librechat-data-provider';
+import { useRouterService } from '~/routes/RouterService';
 import {
   useGetRole,
   useGetUserQuery,
@@ -46,6 +47,7 @@ const AuthContextProvider = ({
   });
 
   const navigate = useNavigate();
+  const router = useRouterService();
 
   const setUserContext = useCallback(
     (userContext: TUserContext) => {
@@ -63,12 +65,12 @@ const AuthContextProvider = ({
         return;
       }
       if (finalRedirect.startsWith('http://') || finalRedirect.startsWith('https://')) {
-        window.location.href = finalRedirect;
+        router.navigateExternal(finalRedirect);
       } else {
-        navigate(finalRedirect, { replace: true });
+        router.navigateTo(finalRedirect, { replace: true });
       }
     },
-    [navigate, setUser],
+    [setUser, router],
   );
   const doSetError = useTimeout({ callback: (error) => setError(error as string | undefined) });
 
@@ -122,9 +124,12 @@ const AuthContextProvider = ({
 
   const userQuery = useGetUserQuery({ enabled: !!(token ?? '') });
 
-  const login = (data: t.TLoginUser) => {
-    loginUser.mutate(data);
-  };
+  const login = useCallback(
+    (data: t.TLoginUser) => {
+      loginUser.mutate(data);
+    },
+    [loginUser],
+  );
 
   const silentRefresh = useCallback(() => {
     if (authConfig?.test === true) {
@@ -152,7 +157,7 @@ const AuthContextProvider = ({
         navigate('/login');
       },
     });
-  }, []);
+  }, [authConfig?.test, navigate, refreshToken, setUserContext]);
 
   useEffect(() => {
     if (userQuery.data) {
@@ -178,6 +183,7 @@ const AuthContextProvider = ({
     navigate,
     silentRefresh,
     setUserContext,
+    doSetError,
   ]);
 
   useEffect(() => {
@@ -214,7 +220,7 @@ const AuthContextProvider = ({
       isAuthenticated,
     }),
 
-    [user, error, isAuthenticated, token, userRole, adminRole],
+    [user, token, error, login, logout, userRole, adminRole, isAuthenticated],
   );
 
   return <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>;

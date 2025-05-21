@@ -1,6 +1,8 @@
 import { useRouteError } from 'react-router-dom';
 import { Button } from '~/components/ui';
 import logger from '~/utils/logger';
+import { useRouterService } from './RouterService';
+import { useLocalize } from '~/hooks';
 
 interface UserAgentData {
   getHighEntropyValues(hints: string[]): Promise<{ platform: string; platformVersion: string }>;
@@ -70,6 +72,8 @@ const getBrowserInfo = async () => {
 };
 
 export default function RouteErrorBoundary() {
+  const router = useRouterService();
+  const localize = useLocalize();
   const typedError = useRouteError() as {
     message?: string;
     stack?: string;
@@ -129,12 +133,12 @@ export default function RouteErrorBoundary() {
     >
       <div className="bg-surface-primary/60 mx-4 w-11/12 max-w-4xl rounded-2xl border border-border-light p-8 shadow-2xl backdrop-blur-xl">
         <h2 className="mb-6 text-center text-3xl font-medium tracking-tight text-text-primary">
-          Oops! Something Unexpected Occurred
+          {localize('com_error_oops')}
         </h2>
 
         {/* Error Message */}
         <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/5 p-4 text-sm text-gray-600 dark:text-gray-200">
-          <h3 className="mb-2 font-medium">Error Message:</h3>
+          <h3 className="mb-2 font-medium">{localize('com_error_message')}</h3>
           <pre className="whitespace-pre-wrap text-sm font-light leading-relaxed text-text-primary">
             {errorDetails.message}
           </pre>
@@ -144,7 +148,7 @@ export default function RouteErrorBoundary() {
         {(typeof errorDetails.status === 'number' ||
           typeof errorDetails.statusText === 'string') && (
           <div className="mb-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-4 text-sm text-text-primary">
-            <h3 className="mb-2 font-medium">Status:</h3>
+            <h3 className="mb-2 font-medium">{localize('com_error_status')}</h3>
             <p className="text-text-primary">
               {typeof errorDetails.status === 'number' && `${errorDetails.status} `}
               {typeof errorDetails.statusText === 'string' && errorDetails.statusText}
@@ -156,7 +160,7 @@ export default function RouteErrorBoundary() {
         {errorDetails.stack != null && errorDetails.stack.trim() !== '' && (
           <details className="group mb-4 rounded-xl border border-border-light p-4">
             <summary className="mb-2 flex cursor-pointer items-center justify-between text-sm font-medium text-text-primary">
-              <span>Stack Trace</span>
+              <span>{localize('com_error_stack_trace')}</span>
               <div className="flex items-center">
                 <Button
                   variant="outline"
@@ -164,7 +168,7 @@ export default function RouteErrorBoundary() {
                   onClick={handleCopyStack}
                   className="ml-2 px-2 py-1 text-xs"
                 >
-                  Copy
+                  {localize('com_ui_copy')}
                 </Button>
               </div>
             </summary>
@@ -187,7 +191,7 @@ export default function RouteErrorBoundary() {
         {errorDetails.data != null && (
           <details className="group mb-4 rounded-xl border border-border-light p-4">
             <summary className="mb-2 flex cursor-pointer items-center justify-between text-sm font-medium text-text-primary">
-              <span>Additional Details</span>
+              <span>{localize('com_error_additional_details')}</span>
               <span className="transition-transform group-open:rotate-90">{'>'}</span>
             </summary>
             <pre className="whitespace-pre-wrap text-xs font-light leading-relaxed text-text-primary">
@@ -197,23 +201,25 @@ export default function RouteErrorBoundary() {
         )}
 
         <div className="mt-6 flex flex-col gap-4">
-          <p className="text-sm font-light text-text-secondary">Please try one of the following:</p>
+          <p className="text-sm font-light text-text-secondary">
+            {localize('com_error_try_following')}
+          </p>
           <ul className="list-inside list-disc text-sm text-text-secondary">
-            <li>Refresh the page</li>
-            <li>Clear your browser cache</li>
-            <li>Check your internet connection</li>
-            <li>Contact the Admin if the issue persists</li>
+            <li>{localize('com_error_refresh_page')}</li>
+            <li>{localize('com_error_clear_cache')}</li>
+            <li>{localize('com_error_check_connection')}</li>
+            <li>{localize('com_error_contact_admin')}</li>
           </ul>
           <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Button
               variant="submit"
-              onClick={() => window.location.reload()}
+              onClick={() => router.reloadPage()}
               className="w-full sm:w-auto"
             >
-              Refresh Page
+              {localize('com_ui_refresh_page')}
             </Button>
             <Button variant="outline" onClick={handleDownloadLogs} className="w-full sm:w-auto">
-              Download Error Logs
+              {localize('com_ui_download_error_logs')}
             </Button>
           </div>
         </div>

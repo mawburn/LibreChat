@@ -5,6 +5,7 @@ import type { TLoginLayoutContext } from '~/common';
 import { ErrorMessage } from '~/components/Auth/ErrorMessage';
 import { getLoginError } from '~/utils';
 import { useLocalize } from '~/hooks';
+import { useRouterService } from '~/routes/RouterService';
 import LoginForm from './LoginForm';
 import SocialButton from '~/components/Auth/SocialButton';
 import { OpenIDIcon } from '~/components';
@@ -13,6 +14,7 @@ function Login() {
   const localize = useLocalize();
   const { error, setError, login } = useAuthContext();
   const { startupConfig } = useOutletContext<TLoginLayoutContext>();
+  const router = useRouterService();
 
   const [searchParams, setSearchParams] = useSearchParams();
   // Determine if auto-redirect should be disabled based on the URL parameter
@@ -41,9 +43,9 @@ function Login() {
   useEffect(() => {
     if (shouldAutoRedirect) {
       console.log('Auto-redirecting to OpenID provider...');
-      window.location.href = `${startupConfig.serverDomain}/oauth/openid`;
+      router.navigateExternal(`${startupConfig.serverDomain}/oauth/openid`);
     }
-  }, [shouldAutoRedirect, startupConfig]);
+  }, [shouldAutoRedirect, startupConfig, router]);
 
   // Render fallback UI if auto-redirect is active.
   if (shouldAutoRedirect) {

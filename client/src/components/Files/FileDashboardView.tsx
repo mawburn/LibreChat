@@ -1,11 +1,16 @@
 import React from 'react';
 import VectorStoreSidePanel from './VectorStore/VectorStoreSidePanel';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { useRouterService } from '~/routes/RouterService';
+import useTypedParams from '~/routes/hooks/useTypedParams';
+import { useLocalize } from '~/hooks';
 import { Button } from '../ui';
 
 const FileDashboardView = () => {
-  const params = useParams();
-  const navigate = useNavigate();
+  const params = useTypedParams<{ vectorStoreId: string }>();
+  const router = useRouterService();
+  const localize = useLocalize();
+
   return (
     <div className="bg-[#f9f9f9] p-0 lg:p-7">
       <div className="ml-3 mt-3 flex flex-row justify-between">
@@ -15,10 +20,10 @@ const FileDashboardView = () => {
             variant={'outline'}
             size={'sm'}
             onClick={() => {
-              navigate('/d');
+              router.navigateTo('/d');
             }}
           >
-            Go back
+            {localize('com_files_go_back')}
           </Button>
         )}
       </div>

@@ -4,8 +4,8 @@ import { useRecoilState } from 'recoil';
 import { Search, X } from 'lucide-react';
 import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useLocalize, useNewConvo } from '~/hooks';
+import { useRouterService } from '~/routes/RouterService';
 import { cn } from '~/utils';
 import store from '~/store';
 
@@ -15,9 +15,8 @@ type SearchBarProps = {
 
 const SearchBar = forwardRef((props: SearchBarProps, ref: React.Ref<HTMLDivElement>) => {
   const localize = useLocalize();
-  const location = useLocation();
+  const router = useRouterService();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const { isSmallScreen } = props;
 
   const [text, setText] = useState('');
@@ -28,11 +27,12 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: React.Ref<HTMLDivEleme
   const [search, setSearchState] = useRecoilState(store.search);
 
   const clearSearch = useCallback(() => {
-    if (location.pathname.includes('/search')) {
+    const currentPath = router.getCurrentPath();
+    if (currentPath.includes('/search')) {
       newConversation({ disableFocus: true });
-      navigate('/c/new', { replace: true });
+      router.navigateTo('/c/new', { replace: true });
     }
-  }, [newConversation, location.pathname, navigate]);
+  }, [newConversation, router]);
 
   const clearText = useCallback(() => {
     setShowClearIcon(false);
@@ -83,10 +83,11 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: React.Ref<HTMLDivEleme
       isTyping: true,
     }));
     debouncedSetDebouncedQuery(value);
-    if (value.length > 0 && location.pathname !== '/search') {
-      navigate('/search', { replace: true });
-    } else if (value.length === 0 && location.pathname === '/search') {
-      navigate('/c/new', { replace: true });
+    const currentPath = router.getCurrentPath();
+    if (value.length > 0 && currentPath !== '/search') {
+      router.navigateTo('/search', { replace: true });
+    } else if (value.length === 0 && currentPath === '/search') {
+      router.navigateTo('/c/new', { replace: true });
     }
   };
 

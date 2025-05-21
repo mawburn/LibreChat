@@ -5,6 +5,7 @@ import { useGetSharedLinkQuery } from 'librechat-data-provider/react-query';
 import OGDialogTemplate from '~/components/ui/OGDialogTemplate';
 import { useLocalize, useCopyToClipboard } from '~/hooks';
 import { Button, Spinner, OGDialog } from '~/components';
+import { useRouterService } from '~/routes/RouterService';
 import SharedLinkButton from './SharedLinkButton';
 import { cn } from '~/utils';
 
@@ -22,6 +23,7 @@ export default function ShareButton({
   children?: React.ReactNode;
 }) {
   const localize = useLocalize();
+  const router = useRouterService();
   const [showQR, setShowQR] = useState(false);
   const [sharedLink, setSharedLink] = useState('');
   const [isCopying, setIsCopying] = useState(false);
@@ -30,10 +32,10 @@ export default function ShareButton({
 
   useEffect(() => {
     if (share?.shareId !== undefined) {
-      const link = `${window.location.protocol}//${window.location.host}/share/${share.shareId}`;
+      const link = router.buildShareableUrl(`/share/${share.shareId}`);
       setSharedLink(link);
     }
-  }, [share]);
+  }, [share, router]);
 
   const button =
     isLoading === true ? null : (

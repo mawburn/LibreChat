@@ -1,21 +1,20 @@
-import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useVerifyEmailMutation, useResendVerificationEmail } from '~/data-provider';
 import { ThemeSelector } from '~/components/ui';
 import { Spinner } from '~/components/svg';
 import { useLocalize } from '~/hooks';
+import { useRouterService } from '~/routes/RouterService';
 
-function RequestPasswordReset() {
-  const navigate = useNavigate();
+function VerifyEmail() {
+  const router = useRouterService();
   const localize = useLocalize();
-  const [params] = useSearchParams();
 
   const [countdown, setCountdown] = useState<number>(3);
   const [headerText, setHeaderText] = useState<string>('');
   const [showResendLink, setShowResendLink] = useState<boolean>(false);
   const [verificationStatus, setVerificationStatus] = useState<boolean>(false);
-  const token = useMemo(() => params.get('token') || '', [params]);
-  const email = useMemo(() => params.get('email') || '', [params]);
+  const token = useMemo(() => router.getQueryParam('token') || '', [router]);
+  const email = useMemo(() => router.getQueryParam('email') || '', [router]);
 
   const countdownRedirect = useCallback(() => {
     setCountdown(3);
@@ -23,13 +22,13 @@ function RequestPasswordReset() {
       setCountdown((prevCountdown) => {
         if (prevCountdown <= 1) {
           clearInterval(timer);
-          navigate('/c/new', { replace: true });
+          router.navigateTo('/c/new', { replace: true });
           return 0;
         }
         return prevCountdown - 1;
       });
     }, 1000);
-  }, [navigate]);
+  }, [router]);
 
   const verifyEmailMutation = useVerifyEmailMutation({
     onSuccess: () => {
@@ -37,7 +36,7 @@ function RequestPasswordReset() {
       setVerificationStatus(true);
       countdownRedirect();
     },
-    onError: (error: unknown) => {
+    onError: () => {
       setHeaderText(localize('com_auth_email_verification_failed') + ' 😢');
       setShowResendLink(true);
       setVerificationStatus(true);
@@ -75,7 +74,7 @@ function RequestPasswordReset() {
       setShowResendLink(true);
       setVerificationStatus(true);
     }
-  }, [token, email, verificationStatus, verifyEmailMutation]);
+  }, [token, email, verificationStatus, verifyEmailMutation, localize]);
 
   const VerificationSuccess = () => (
     <div className="flex flex-col items-center justify-center">
@@ -123,4 +122,4 @@ function RequestPasswordReset() {
   );
 }
 
-export default RequestPasswordReset;
+export default VerifyEmail;

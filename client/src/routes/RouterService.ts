@@ -44,6 +44,10 @@ export class RouterService {
 
     return null;
   }
+
+  reloadPage(): void {
+    window.location.reload();
+  }
 }
 
 export function useRouterService() {
@@ -92,12 +96,14 @@ export function useRouterService() {
         navigate(`${location.pathname}${query}`, { replace: options.replace });
       },
       getCurrentPath: () => location.pathname,
+      getCurrentLocation: () => location,
       getSearchParams: () => new URLSearchParams(location.search),
       isNavigating: () => navigationState.state !== 'idle',
       getFullUrl: routerService.getFullUrl,
       getOrigin: routerService.getOrigin,
       buildShareableUrl: routerService.buildShareableUrl,
       openNewWindow: routerService.openNewWindow,
+      reloadPage: () => window.location.reload(),
     };
   }, [navigate, location, submit, navigationState, routerService]);
 
