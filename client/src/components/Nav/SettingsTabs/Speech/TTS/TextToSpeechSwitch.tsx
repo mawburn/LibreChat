@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -9,7 +9,7 @@ export default function TextToSpeechSwitch({
   onCheckedChange?: (value: boolean) => void;
 }) {
   const localize = useLocalize();
-  const [TextToSpeech, setTextToSpeech] = useRecoilState<boolean>(store.textToSpeech);
+  const [TextToSpeech, setTextToSpeech] = useAtom<boolean>(store.textToSpeech);
 
   const handleCheckedChange = (value: boolean) => {
     setTextToSpeech(value);

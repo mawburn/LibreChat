@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import HoverCardSettings from '../HoverCardSettings';
 import { Switch } from '~/components/ui';
 import useLocalize from '~/hooks/useLocalize';
@@ -9,7 +9,7 @@ export default function SaveBadgesState({
 }: {
   onCheckedChange?: (value: boolean) => void;
 }) {
-  const [saveBadgesState, setSaveBadgesState] = useRecoilState<boolean>(store.saveBadgesState);
+  const [saveBadgesState, setSaveBadgesState] = useAtom<boolean>(store.saveBadgesState);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

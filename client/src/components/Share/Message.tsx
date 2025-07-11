@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import type { TMessageProps } from '~/common';
 import MinimalHoverButtons from '~/components/Chat/Messages/MinimalHoverButtons';
 import MessageContent from '~/components/Chat/Messages/Content/MessageContent';
@@ -15,7 +15,7 @@ import store from '~/store';
 
 import Icon from './MessageIcon';
 export default function Message(props: TMessageProps) {
-  const fontSize = useRecoilValue(store.fontSize);
+  const fontSize = useAtomValue(store.fontSize);
   const {
     message,
     siblingIdx,

@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import HoverCardSettings from '../HoverCardSettings';
 import { Switch } from '~/components/ui';
 import useLocalize from '~/hooks/useLocalize';
@@ -9,7 +9,7 @@ export default function SaveDraft({
 }: {
   onCheckedChange?: (value: boolean) => void;
 }) {
-  const [showThinking, setSaveDrafts] = useRecoilState<boolean>(store.showThinking);
+  const [showThinking, setSaveDrafts] = useAtom<boolean>(store.showThinking);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

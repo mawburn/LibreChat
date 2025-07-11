@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce';
-import React, { useState, useCallback, useMemo } from 'react';
-import type { SetterOrUpdater } from 'recoil';
+import { useState, useCallback, useMemo } from 'react';
+import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import type { TSetOption } from '~/common';
 import { defaultDebouncedDelay } from '~/common';
 
@@ -15,14 +15,14 @@ function useDebouncedInput<T = unknown>({
   delay = defaultDebouncedDelay,
 }: {
   setOption?: TSetOption;
-  setter?: SetterOrUpdater<T>;
+  setter?: Dispatch<SetStateAction<T>>;
   optionKey?: string | number;
   initialValue: T;
   delay?: number;
 }): [
-  (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | T, numeric?: boolean) => void,
+  (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | T, numeric?: boolean) => void,
   T,
-  SetterOrUpdater<T>,
+  Dispatch<SetStateAction<T>>,
   // (newValue: string) => void,
 ] {
   const [value, setValue] = useState<T>(initialValue);
@@ -37,11 +37,11 @@ function useDebouncedInput<T = unknown>({
 
   /** An onChange handler that updates the local state and the debounced option */
   const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | T, numeric?: boolean) => {
+    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | T, numeric?: boolean) => {
       let newValue: T =
         typeof e !== 'object'
           ? e
-          : ((e as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>).target
+          : ((e as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>).target
               .value as unknown as T);
       // Handle numeric conversion only if value is not undefined and not empty string
       if (numeric === true && newValue !== undefined && newValue !== '') {

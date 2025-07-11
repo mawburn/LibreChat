@@ -1,9 +1,8 @@
+import { Provider } from 'jotai';
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, fireEvent } from 'test/layout-test-utils';
 import AutoTranscribeAudioSwitch from '../AutoTranscribeAudioSwitch';
-import { RecoilRoot } from 'recoil';
-
 describe('AutoTranscribeAudioSwitch', () => {
   /**
    * Mock function to set the auto-send-text state.
@@ -19,9 +18,9 @@ describe('AutoTranscribeAudioSwitch', () => {
 
   it('renders correctly', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <Provider>
         <AutoTranscribeAudioSwitch />
-      </RecoilRoot>,
+      </Provider>,
     );
 
     expect(getByTestId('AutoTranscribeAudio')).toBeInTheDocument();
@@ -29,9 +28,9 @@ describe('AutoTranscribeAudioSwitch', () => {
 
   it('calls onCheckedChange when the switch is toggled', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <Provider>
         <AutoTranscribeAudioSwitch onCheckedChange={mockSetAutoTranscribeAudio} />
-      </RecoilRoot>,
+      </Provider>,
     );
     const switchElement = getByTestId('AutoTranscribeAudio');
     fireEvent.click(switchElement);

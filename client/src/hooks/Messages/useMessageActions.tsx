@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { useCallback, useMemo, useState } from 'react';
 import { useUpdateFeedbackMutation } from 'librechat-data-provider/react-query';
 import {
@@ -33,7 +33,7 @@ export type TMessageActions = Pick<
 export default function useMessageActions(props: TMessageActions) {
   const localize = useLocalize();
   const { user } = useAuthContext();
-  const UsernameDisplay = useRecoilValue<boolean>(store.UsernameDisplay);
+  const UsernameDisplay = useAtomValue<boolean>(store.UsernameDisplay);
   const { message, currentEditId, setCurrentEditId, isMultiMessage, searchResults } = props;
 
   const {

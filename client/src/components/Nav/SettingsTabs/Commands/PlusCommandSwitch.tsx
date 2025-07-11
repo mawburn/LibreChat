@@ -1,10 +1,10 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
 
 export default function PlusCommandSwitch() {
-  const [plusCommand, setPlusCommand] = useRecoilState<boolean>(store.plusCommand);
+  const [plusCommand, setPlusCommand] = useAtom<boolean>(store.plusCommand);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

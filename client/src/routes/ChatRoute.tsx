@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Constants, EModelEndpoint } from 'librechat-data-provider';
@@ -11,20 +12,13 @@ import ChatView from '~/components/Chat/ChatView';
 import useAuthRedirect from './useAuthRedirect';
 import temporaryStore from '~/store/temporary';
 import { Spinner } from '~/components/svg';
-import { useRecoilCallback } from 'recoil';
 import store from '~/store';
 
 export default function ChatRoute() {
   const { data: startupConfig } = useGetStartupConfig();
   const { isAuthenticated, user } = useAuthRedirect();
 
-  const setIsTemporary = useRecoilCallback(
-    ({ set }) =>
-      (value: boolean) => {
-        set(temporaryStore.isTemporary, value);
-      },
-    [],
-  );
+  const setIsTemporary = useSetAtom(temporaryStore.isTemporary);
   useAppStartup({ startupConfig, user });
 
   const index = 0;

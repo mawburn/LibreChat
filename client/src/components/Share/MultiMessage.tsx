@@ -1,8 +1,8 @@
+import { useAtom } from 'jotai';
 import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
 import type { TMessage } from 'librechat-data-provider';
 import type { TMessageProps } from '~/common';
-// eslint-disable-next-line import/no-cycle
+
 import Message from './Message';
 import store from '~/store';
 
@@ -13,7 +13,7 @@ export default function MultiMessage({
   currentEditId,
   setCurrentEditId,
 }: TMessageProps) {
-  const [siblingIdx, setSiblingIdx] = useRecoilState(store.messagesSiblingIdxFamily(messageId));
+  const [siblingIdx, setSiblingIdx] = useAtom(store.messagesSiblingIdxFamily(messageId));
 
   const setSiblingIdxRev = (value: number) => {
     setSiblingIdx((messagesTree?.length ?? 0) - value - 1);

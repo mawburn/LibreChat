@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import type { Dispatch, SetStateAction, MutableRefObject } from 'react';
 import { StepTypes, ContentTypes, ToolCallTypes, getNonEmptyValue } from 'librechat-data-provider';
 import type {
   Agents,
@@ -7,7 +8,6 @@ import type {
   EventSubmission,
   TMessageContentParts,
 } from 'librechat-data-provider';
-import type { SetterOrUpdater } from 'recoil';
 import type { AnnounceOptions } from '~/common';
 import { MESSAGE_UPDATE_INTERVAL } from '~/common';
 
@@ -15,8 +15,8 @@ type TUseStepHandler = {
   announcePolite: (options: AnnounceOptions) => void;
   setMessages: (messages: TMessage[]) => void;
   getMessages: () => TMessage[] | undefined;
-  setIsSubmitting: SetterOrUpdater<boolean>;
-  lastAnnouncementTimeRef: React.MutableRefObject<number>;
+  setIsSubmitting: Dispatch<SetStateAction<boolean>>;
+  lastAnnouncementTimeRef: MutableRefObject<number>;
 };
 
 type TStepEvent = {

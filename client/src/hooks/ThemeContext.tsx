@@ -1,6 +1,6 @@
 //ThemeContext.js
 // source: https://plainenglish.io/blog/light-and-dark-mode-in-react-web-application-with-tailwind-css-89674496b942
-import { useSetRecoilState } from 'recoil';
+import { useSetAtom } from 'jotai';
 import React, { createContext, useState, useEffect } from 'react';
 import { getInitialTheme, applyFontSize } from '~/utils';
 import store from '~/store';
@@ -28,7 +28,7 @@ export const ThemeContext = createContext<ProviderValue>(defaultContextValue);
 
 export const ThemeProvider = ({ initialTheme, children }) => {
   const [theme, setTheme] = useState(getInitialTheme);
-  const setFontSize = useSetRecoilState(store.fontSize);
+  const setFontSize = useSetAtom(store.fontSize);
 
   const rawSetTheme = (rawTheme: string) => {
     const root = window.document.documentElement;

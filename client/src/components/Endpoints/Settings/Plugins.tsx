@@ -1,5 +1,5 @@
+import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useAvailablePluginsQuery } from 'librechat-data-provider/react-query';
 import type { TPlugin } from 'librechat-data-provider';
@@ -41,7 +41,7 @@ export default function Settings({
   checkPluginSelection: (value: string) => boolean;
 }) {
   const localize = useLocalize();
-  const availableTools = useRecoilValue(store.availableTools);
+  const availableTools = useAtomValue(store.availableTools);
   const { data: allPlugins } = useAvailablePluginsQuery({
     select: selectPlugins,
   });
@@ -165,7 +165,7 @@ export default function Settings({
               )}
               className={cn(
                 defaultTextProps,
-                'flex max-h-[138px] min-h-[100px] w-full resize-none px-3 py-2 ',
+                'flex max-h-[138px] min-h-[100px] w-full resize-none px-3 py-2',
               )}
             />
           </div>

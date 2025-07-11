@@ -1,9 +1,8 @@
+import { Provider } from 'jotai';
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, fireEvent } from 'test/layout-test-utils';
 import CacheTTSSwitch from '../CacheTTSSwitch';
-import { RecoilRoot } from 'recoil';
-
 describe('CacheTTSSwitch', () => {
   /**
    * Mock function to set the cache-tts state.
@@ -16,9 +15,9 @@ describe('CacheTTSSwitch', () => {
 
   it('renders correctly', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <Provider>
         <CacheTTSSwitch />
-      </RecoilRoot>,
+      </Provider>,
     );
 
     expect(getByTestId('CacheTTS')).toBeInTheDocument();
@@ -26,9 +25,9 @@ describe('CacheTTSSwitch', () => {
 
   it('calls onCheckedChange when the switch is toggled', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <Provider>
         <CacheTTSSwitch onCheckedChange={mockSetCacheTTS} />
-      </RecoilRoot>,
+      </Provider>,
     );
     const switchElement = getByTestId('CacheTTS');
     fireEvent.click(switchElement);

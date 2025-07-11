@@ -1,10 +1,10 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
 
 export default function AtCommandSwitch() {
-  const [atCommand, setAtCommand] = useRecoilState<boolean>(store.atCommand);
+  const [atCommand, setAtCommand] = useAtom<boolean>(store.atCommand);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

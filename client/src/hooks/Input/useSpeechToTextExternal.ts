@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSpeechToTextMutation } from '~/data-provider';
 import useGetAudioSettings from './useGetAudioSettings';
 import { useToastContext } from '~/Providers';
@@ -23,10 +23,10 @@ const useSpeechToTextExternal = (
   const [isRequestBeingMade, setIsRequestBeingMade] = useState(false);
   const [audioMimeType, setAudioMimeType] = useState<string>(() => getBestSupportedMimeType());
 
-  const [minDecibels] = useRecoilState(store.decibelValue);
-  const [autoSendText] = useRecoilState(store.autoSendText);
-  const [speechToText] = useRecoilState<boolean>(store.speechToText);
-  const [autoTranscribeAudio] = useRecoilState<boolean>(store.autoTranscribeAudio);
+  const [minDecibels] = useAtom(store.decibelValue);
+  const [autoSendText] = useAtom(store.autoSendText);
+  const [speechToText] = useAtom<boolean>(store.speechToText);
+  const [autoTranscribeAudio] = useAtom<boolean>(store.autoTranscribeAudio);
 
   const { mutate: processAudio, isLoading: isProcessing } = useSpeechToTextMutation({
     onSuccess: (data) => {
@@ -107,7 +107,7 @@ const useSpeechToTextExternal = (
       });
       setPermission(true);
       audioStream.current = streamData ?? null;
-    } catch (err) {
+    } catch {
       setPermission(false);
     }
   };
@@ -241,26 +241,37 @@ const useSpeechToTextExternal = (
     stopRecording();
   };
 
-  const handleKeyDown = async (e: KeyboardEvent) => {
-    if (e.shiftKey && e.altKey && e.code === 'KeyL' && isExternalSTTEnabled) {
-      if (!window.MediaRecorder) {
-        showToast({ message: 'MediaRecorder is not supported in this browser', status: 'error' });
-        return;
-      }
+  const handleKeyDown = useCallback(
+    async (e: KeyboardEvent) => {
+      if (e.shiftKey && e.altKey && e.code === 'KeyL' && isExternalSTTEnabled) {
+        if (!window.MediaRecorder) {
+          showToast({ message: 'MediaRecorder is not supported in this browser', status: 'error' });
+          return;
+        }
 
-      if (permission === false) {
-        await getMicrophonePermission();
-      }
+        if (permission === false) {
+          await getMicrophonePermission();
+        }
 
-      if (isListening) {
-        stopRecording();
-      } else {
-        startRecording();
-      }
+        if (isListening) {
+          stopRecording();
+        } else {
+          startRecording();
+        }
 
-      e.preventDefault();
-    }
-  };
+        e.preventDefault();
+      }
+    },
+    [
+      isExternalSTTEnabled,
+      permission,
+      isListening,
+      showToast,
+      getMicrophonePermission,
+      stopRecording,
+      startRecording,
+    ],
+  );
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -268,7 +279,7 @@ const useSpeechToTextExternal = (
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isListening]);
+  }, [handleKeyDown, isListening]);
 
   return {
     isListening,

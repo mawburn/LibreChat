@@ -1,7 +1,7 @@
+import { useAtom } from 'jotai';
 import React, { createContext, useContext, useEffect, useRef } from 'react';
-import { useSetRecoilState } from 'recoil';
 import { Tools, Constants, LocalStorageKeys, AgentCapabilities } from 'librechat-data-provider';
-import type { TAgentsEndpoint } from 'librechat-data-provider';
+import type { TAgentsEndpoint, TEphemeralAgent } from 'librechat-data-provider';
 import {
   useSearchApiKeyForm,
   useGetAgentsConfig,
@@ -50,7 +50,7 @@ export default function BadgeRowProvider({
   const lastKeyRef = useRef<string>('');
   const { agentsConfig } = useGetAgentsConfig();
   const key = conversationId ?? Constants.NEW_CONVO;
-  const setEphemeralAgent = useSetRecoilState(ephemeralAgentByConvoId(key));
+  const [ephemeralAgent, setEphemeralAgent] = useAtom(ephemeralAgentByConvoId(key));
 
   /** Initialize ephemeralAgent from localStorage on mount and when conversation changes */
   useEffect(() => {
@@ -109,15 +109,16 @@ export default function BadgeRowProvider({
 
       // Always set values for all tools (use defaults if not in localStorage)
       // If ephemeralAgent is null, create a new object with just our tool values
-      setEphemeralAgent((prev) => ({
-        ...(prev || {}),
+      const currentAgent = ephemeralAgent || {};
+      setEphemeralAgent({
+        ...currentAgent,
         [Tools.execute_code]: initialValues[Tools.execute_code] ?? false,
         [Tools.web_search]: initialValues[Tools.web_search] ?? false,
         [Tools.file_search]: initialValues[Tools.file_search] ?? false,
-        [AgentCapabilities.artifacts]: initialValues[AgentCapabilities.artifacts] ?? false,
-      }));
+        artifacts: initialValues[AgentCapabilities.artifacts] ?? false,
+      } as TEphemeralAgent);
     }
-  }, [key, isSubmitting, setEphemeralAgent]);
+  }, [key, isSubmitting, ephemeralAgent, setEphemeralAgent]);
 
   /** Startup config */
   const { data: startupConfig } = useGetStartupConfig();
