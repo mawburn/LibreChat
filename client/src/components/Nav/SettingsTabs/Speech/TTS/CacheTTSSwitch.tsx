@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -9,8 +9,8 @@ export default function CacheTTSSwitch({
   onCheckedChange?: (value: boolean) => void;
 }) {
   const localize = useLocalize();
-  const [cacheTTS, setCacheTTS] = useRecoilState<boolean>(store.cacheTTS);
-  const [textToSpeech] = useRecoilState<boolean>(store.textToSpeech);
+  const [cacheTTS, setCacheTTS] = useAtom<boolean>(store.cacheTTS);
+  const [textToSpeech] = useAtom<boolean>(store.textToSpeech);
 
   const handleCheckedChange = (value: boolean) => {
     setCacheTTS(value);

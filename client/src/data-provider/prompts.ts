@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { dataService, QueryKeys } from 'librechat-data-provider';
 import type { UseMutationResult } from '@tanstack/react-query';
@@ -24,9 +24,9 @@ export const useUpdatePromptGroup = (
 > => {
   const { onMutate, onError, onSuccess } = options || {};
   const queryClient = useQueryClient();
-  const name = useRecoilValue(store.promptsName);
-  const pageSize = useRecoilValue(store.promptsPageSize);
-  const category = useRecoilValue(store.promptsCategory);
+  const name = useAtomValue(store.promptsName);
+  const pageSize = useAtomValue(store.promptsPageSize);
+  const category = useAtomValue(store.promptsCategory);
 
   return useMutation({
     mutationFn: (variables: t.TUpdatePromptGroupVariables) =>
@@ -102,9 +102,9 @@ export const useCreatePrompt = (
 ): UseMutationResult<t.TCreatePromptResponse, unknown, t.TCreatePrompt, unknown> => {
   const queryClient = useQueryClient();
   const { onSuccess, ...rest } = options || {};
-  const name = useRecoilValue(store.promptsName);
-  const pageSize = useRecoilValue(store.promptsPageSize);
-  const category = useRecoilValue(store.promptsCategory);
+  const name = useAtomValue(store.promptsName);
+  const pageSize = useAtomValue(store.promptsPageSize);
+  const category = useAtomValue(store.promptsCategory);
 
   return useMutation({
     mutationFn: (payload: t.TCreatePrompt) => dataService.createPrompt(payload),
@@ -144,9 +144,9 @@ export const useDeletePrompt = (
 ): UseMutationResult<t.TDeletePromptResponse, unknown, t.TDeletePromptVariables, unknown> => {
   const queryClient = useQueryClient();
   const { onSuccess, ...rest } = options || {};
-  const name = useRecoilValue(store.promptsName);
-  const pageSize = useRecoilValue(store.promptsPageSize);
-  const category = useRecoilValue(store.promptsCategory);
+  const name = useAtomValue(store.promptsName);
+  const pageSize = useAtomValue(store.promptsPageSize);
+  const category = useAtomValue(store.promptsCategory);
 
   return useMutation({
     mutationFn: (payload: t.TDeletePromptVariables) => dataService.deletePrompt(payload),
@@ -203,9 +203,9 @@ export const useDeletePromptGroup = (
 > => {
   const queryClient = useQueryClient();
   const { onSuccess, ...rest } = options || {};
-  const name = useRecoilValue(store.promptsName);
-  const pageSize = useRecoilValue(store.promptsPageSize);
-  const category = useRecoilValue(store.promptsCategory);
+  const name = useAtomValue(store.promptsName);
+  const pageSize = useAtomValue(store.promptsPageSize);
+  const category = useAtomValue(store.promptsCategory);
 
   return useMutation({
     mutationFn: (variables: t.TDeletePromptGroupRequest) =>
@@ -255,9 +255,9 @@ export const useUpdatePromptLabels = (
 export const useMakePromptProduction = (options?: t.MakePromptProductionOptions) => {
   const queryClient = useQueryClient();
   const { onSuccess, onError, onMutate } = options || {};
-  const name = useRecoilValue(store.promptsName);
-  const pageSize = useRecoilValue(store.promptsPageSize);
-  const category = useRecoilValue(store.promptsCategory);
+  const name = useAtomValue(store.promptsName);
+  const pageSize = useAtomValue(store.promptsPageSize);
+  const category = useAtomValue(store.promptsCategory);
 
   return useMutation({
     mutationFn: (variables: t.TMakePromptProductionRequest) =>

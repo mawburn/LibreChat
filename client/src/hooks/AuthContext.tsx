@@ -1,3 +1,4 @@
+import { useAtom } from 'jotai';
 import {
   useRef,
   useMemo,
@@ -9,7 +10,6 @@ import {
   createContext,
 } from 'react';
 import { debounce } from 'lodash';
-import { useRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import { setTokenHeader, SystemRoles } from 'librechat-data-provider';
 import type * as t from 'librechat-data-provider';
@@ -33,7 +33,7 @@ const AuthContextProvider = ({
   authConfig?: TAuthConfig;
   children: ReactNode;
 }) => {
-  const [user, setUser] = useRecoilState(store.user);
+  const [user, setUser] = useAtom(store.user);
   const [token, setToken] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -127,9 +127,12 @@ const AuthContextProvider = ({
 
   const userQuery = useGetUserQuery({ enabled: !!(token ?? '') });
 
-  const login = (data: t.TLoginUser) => {
-    loginUser.mutate(data);
-  };
+  const login = useCallback(
+    (data: t.TLoginUser) => {
+      loginUser.mutate(data);
+    },
+    [loginUser],
+  );
 
   const silentRefresh = useCallback(() => {
     if (authConfig?.test === true) {
@@ -157,7 +160,7 @@ const AuthContextProvider = ({
         navigate('/login');
       },
     });
-  }, []);
+  }, [authConfig?.test, navigate, refreshToken, setUserContext]);
 
   useEffect(() => {
     if (userQuery.data) {
@@ -183,6 +186,7 @@ const AuthContextProvider = ({
     navigate,
     silentRefresh,
     setUserContext,
+    doSetError,
   ]);
 
   useEffect(() => {
@@ -219,7 +223,7 @@ const AuthContextProvider = ({
       isAuthenticated,
     }),
 
-    [user, error, isAuthenticated, token, userRole, adminRole],
+    [user, token, error, login, logout, userRole, adminRole, isAuthenticated],
   );
 
   return <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>;

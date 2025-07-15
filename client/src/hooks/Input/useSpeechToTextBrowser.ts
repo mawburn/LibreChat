@@ -1,5 +1,5 @@
+import { useAtom } from 'jotai';
 import { useEffect, useRef, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import useGetAudioSettings from './useGetAudioSettings';
 import { useToastContext } from '~/Providers';
@@ -16,9 +16,9 @@ const useSpeechToTextBrowser = (
   const lastTranscript = useRef<string | null>(null);
   const lastInterim = useRef<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>();
-  const [autoSendText] = useRecoilState(store.autoSendText);
-  const [languageSTT] = useRecoilState<string>(store.languageSTT);
-  const [autoTranscribeAudio] = useRecoilState<boolean>(store.autoTranscribeAudio);
+  const [autoSendText] = useAtom(store.autoSendText);
+  const [languageSTT] = useAtom<string>(store.languageSTT);
+  const [autoTranscribeAudio] = useAtom<boolean>(store.autoTranscribeAudio);
 
   const {
     listening,
@@ -104,7 +104,7 @@ const useSpeechToTextBrowser = (
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isBrowserSTTEnabled, toggleListening]);
 
   return {
     isListening,

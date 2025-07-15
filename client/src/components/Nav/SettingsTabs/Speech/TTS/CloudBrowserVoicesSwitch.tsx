@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -9,10 +9,8 @@ export default function CloudBrowserVoicesSwitch({
   onCheckedChange?: (value: boolean) => void;
 }) {
   const localize = useLocalize();
-  const [cloudBrowserVoices, setCloudBrowserVoices] = useRecoilState<boolean>(
-    store.cloudBrowserVoices,
-  );
-  const [textToSpeech] = useRecoilState<boolean>(store.textToSpeech);
+  const [cloudBrowserVoices, setCloudBrowserVoices] = useAtom<boolean>(store.cloudBrowserVoices);
+  const [textToSpeech] = useAtom<boolean>(store.textToSpeech);
 
   const handleCheckedChange = (value: boolean) => {
     setCloudBrowserVoices(value);

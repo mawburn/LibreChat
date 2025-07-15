@@ -1,5 +1,5 @@
+import { useAtomValue } from 'jotai';
 import { useEffect, useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 import MinimalMessagesWrapper from '~/components/Chat/Messages/MinimalMessages';
 import { useNavScrolling, useLocalize, useAuthContext } from '~/hooks';
 import SearchMessage from '~/components/Chat/Messages/SearchMessage';
@@ -14,7 +14,7 @@ export default function Search() {
   const fileMap = useFileMapContext();
   const { showToast } = useToastContext();
   const { isAuthenticated } = useAuthContext();
-  const search = useRecoilValue(store.search);
+  const search = useAtomValue(store.search);
   const searchQuery = search.debouncedQuery;
 
   const {

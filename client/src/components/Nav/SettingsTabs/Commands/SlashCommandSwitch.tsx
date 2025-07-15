@@ -1,10 +1,10 @@
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { Switch } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
 
 export default function SlashCommandSwitch() {
-  const [slashCommand, setSlashCommand] = useRecoilState<boolean>(store.slashCommand);
+  const [slashCommand, setSlashCommand] = useAtom<boolean>(store.slashCommand);
   const localize = useLocalize();
 
   const handleCheckedChange = (value: boolean) => {

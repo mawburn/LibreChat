@@ -1,5 +1,5 @@
+import { useAtom } from 'jotai';
 import React from 'react';
-import { useRecoilState } from 'recoil';
 import { Dropdown } from '~/components/ui';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
@@ -10,7 +10,7 @@ interface EngineSTTDropdownProps {
 
 const EngineSTTDropdown: React.FC<EngineSTTDropdownProps> = ({ external }) => {
   const localize = useLocalize();
-  const [engineSTT, setEngineSTT] = useRecoilState<string>(store.engineSTT);
+  const [engineSTT, setEngineSTT] = useAtom<string>(store.engineSTT);
 
   const endpointOptions = external
     ? [

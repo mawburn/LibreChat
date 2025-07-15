@@ -1,4 +1,5 @@
-import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useSetAtom } from 'jotai';
+import { RESET } from 'jotai/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MutationKeys, QueryKeys, dataService, request } from 'librechat-data-provider';
 import type { UseMutationResult } from '@tanstack/react-query';
@@ -13,15 +14,15 @@ export const useLogoutUserMutation = (
 ): UseMutationResult<t.TLogoutResponse, unknown, undefined, unknown> => {
   const queryClient = useQueryClient();
   const clearStates = useClearStates();
-  const resetDefaultPreset = useResetRecoilState(store.defaultPreset);
-  const setQueriesEnabled = useSetRecoilState<boolean>(store.queriesEnabled);
+  const resetDefaultPreset = useSetAtom(store.defaultPreset);
+  const setQueriesEnabled = useSetAtom(store.queriesEnabled);
 
   return useMutation([MutationKeys.logoutUser], {
     mutationFn: () => dataService.logout(),
     ...(options || {}),
     onSuccess: (...args) => {
       setQueriesEnabled(false);
-      resetDefaultPreset();
+      resetDefaultPreset(RESET);
       clearStates();
       queryClient.removeQueries();
       options?.onSuccess?.(...args);
@@ -34,13 +35,13 @@ export const useLoginUserMutation = (
 ): UseMutationResult<t.TLoginResponse, unknown, t.TLoginUser, unknown> => {
   const queryClient = useQueryClient();
   const clearStates = useClearStates();
-  const resetDefaultPreset = useResetRecoilState(store.defaultPreset);
-  const setQueriesEnabled = useSetRecoilState<boolean>(store.queriesEnabled);
+  const resetDefaultPreset = useSetAtom(store.defaultPreset);
+  const setQueriesEnabled = useSetAtom(store.queriesEnabled);
   return useMutation([MutationKeys.loginUser], {
     mutationFn: (payload: t.TLoginUser) => dataService.login(payload),
     ...(options || {}),
     onMutate: (vars) => {
-      resetDefaultPreset();
+      resetDefaultPreset(RESET);
       clearStates();
       queryClient.removeQueries();
       options?.onMutate?.(vars);
@@ -72,13 +73,13 @@ export const useDeleteUserMutation = (
 ): UseMutationResult<unknown, unknown, undefined, unknown> => {
   const queryClient = useQueryClient();
   const clearStates = useClearStates();
-  const resetDefaultPreset = useResetRecoilState(store.defaultPreset);
+  const resetDefaultPreset = useSetAtom(store.defaultPreset);
 
   return useMutation([MutationKeys.deleteUser], {
     mutationFn: () => dataService.deleteUser(),
     ...(options || {}),
     onSuccess: (...args) => {
-      resetDefaultPreset();
+      resetDefaultPreset(RESET);
       clearStates();
       clearAllConversationStorage();
       queryClient.removeQueries();
@@ -139,7 +140,7 @@ export const useDisableTwoFactorMutation = (): UseMutationResult<
 > => {
   const queryClient = useQueryClient();
   return useMutation(() => dataService.disableTwoFactor(), {
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.setQueryData([QueryKeys.user, '2fa'], null);
     },
   });

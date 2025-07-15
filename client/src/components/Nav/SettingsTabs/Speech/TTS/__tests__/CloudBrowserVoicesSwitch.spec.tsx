@@ -1,9 +1,8 @@
+import { Provider } from 'jotai';
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, fireEvent } from 'test/layout-test-utils';
 import CloudBrowserVoicesSwitch from '../CloudBrowserVoicesSwitch';
-import { RecoilRoot } from 'recoil';
-
 describe('CloudBrowserVoicesSwitch', () => {
   /**
    * Mock function to set the cache-tts state.
@@ -19,9 +18,9 @@ describe('CloudBrowserVoicesSwitch', () => {
 
   it('renders correctly', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <Provider>
         <CloudBrowserVoicesSwitch />
-      </RecoilRoot>,
+      </Provider>,
     );
 
     expect(getByTestId('CloudBrowserVoices')).toBeInTheDocument();
@@ -29,9 +28,9 @@ describe('CloudBrowserVoicesSwitch', () => {
 
   it('calls onCheckedChange when the switch is toggled', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <Provider>
         <CloudBrowserVoicesSwitch onCheckedChange={mockSetCloudBrowserVoices} />
-      </RecoilRoot>,
+      </Provider>,
     );
     const switchElement = getByTestId('CloudBrowserVoices');
     fireEvent.click(switchElement);

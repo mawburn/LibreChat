@@ -1,9 +1,8 @@
+import { Provider } from 'jotai';
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, fireEvent } from 'test/layout-test-utils';
 import ConversationModeSwitch from './ConversationModeSwitch';
-import { RecoilRoot } from 'recoil';
-
 describe('ConversationModeSwitch', () => {
   /**
    * Mock function to set the auto-send-text state.
@@ -16,9 +15,9 @@ describe('ConversationModeSwitch', () => {
 
   it('renders correctly', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <Provider>
         <ConversationModeSwitch />
-      </RecoilRoot>,
+      </Provider>,
     );
 
     expect(getByTestId('ConversationMode')).toBeInTheDocument();
@@ -26,9 +25,9 @@ describe('ConversationModeSwitch', () => {
 
   it('calls onCheckedChange when the switch is toggled', () => {
     const { getByTestId } = render(
-      <RecoilRoot>
+      <Provider>
         <ConversationModeSwitch onCheckedChange={mockSetConversationMode} />
-      </RecoilRoot>,
+      </Provider>,
     );
     const switchElement = getByTestId('ConversationMode');
     fireEvent.click(switchElement);

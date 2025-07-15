@@ -1,5 +1,5 @@
+import { useAtomValue } from 'jotai';
 import React, { useCallback, useEffect, useRef, useState, memo, useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   Row,
@@ -216,7 +216,7 @@ export default function DataTable<TData, TValue>({
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
-  const search = useRecoilValue(store.search);
+  const search = useAtomValue(store.search);
   const [isDeleting, setIsDeleting] = useState(false);
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [sorting, setSorting] = useState<SortingState>(defaultSort);

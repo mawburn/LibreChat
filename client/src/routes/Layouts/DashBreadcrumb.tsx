@@ -1,7 +1,7 @@
+import { useSetAtom } from 'jotai';
 import { useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SystemRoles } from 'librechat-data-provider';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { ArrowLeft, MessageSquareQuote } from 'lucide-react';
 import {
   Breadcrumb,
@@ -9,18 +9,11 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-  // BreadcrumbEllipsis,
-  // DropdownMenu,
-  // DropdownMenuItem,
-  // DropdownMenuContent,
-  // DropdownMenuTrigger,
 } from '~/components/ui';
 import { useLocalize, useCustomLink, useAuthContext } from '~/hooks';
 import AdvancedSwitch from '~/components/Prompts/AdvancedSwitch';
-// import { RightPanel } from '../../components/Prompts/RightPanel';
 import AdminSettings from '~/components/Prompts/AdminSettings';
 import { useDashboardContext } from '~/Providers';
-// import { PromptsEditorMode } from '~/common';
 import store from '~/store';
 
 const promptsPathPattern = /prompts\/(?!new(?:\/|$)).*$/;
@@ -40,9 +33,8 @@ export default function DashBreadcrumb() {
   const { prevLocationPath } = useDashboardContext();
   const lastConversationId = useMemo(() => getConversationId(prevLocationPath), [prevLocationPath]);
 
-  const setPromptsName = useSetRecoilState(store.promptsName);
-  const setPromptsCategory = useSetRecoilState(store.promptsCategory);
-  const editorMode = useRecoilValue(store.promptsEditorMode);
+  const setPromptsName = useSetAtom(store.promptsName);
+  const setPromptsCategory = useSetAtom(store.promptsCategory);
 
   const clickCallback = useCallback(() => {
     setPromptsName('');
@@ -73,25 +65,6 @@ export default function DashBreadcrumb() {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          {/*
-        <BreadcrumbItem className="hover:dark:text-white">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex cursor-default items-center gap-1">
-              <BreadcrumbEllipsis className="h-4 w-4" />
-              <BreadcrumbItem className="hover:dark:text-white">
-                <span className="text-gray-400">{localize('com_ui_dashboard')}</span>
-              </BreadcrumbItem>
-              <span className="sr-only">Toggle menu</span>
-            </DropdownMenuTrigger>
-           <DropdownMenuContent align="start">
-              <DropdownMenuItem>Documentation</DropdownMenuItem>
-              <DropdownMenuItem>Themes</DropdownMenuItem>
-              <DropdownMenuItem>GitHub</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        */}
           <BreadcrumbItem className="hover:dark:text-white">
             <BreadcrumbLink
               href="/d/prompts"

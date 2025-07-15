@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { useCallback, useMemo, memo } from 'react';
 import type { TMessage, TMessageContentParts } from 'librechat-data-provider';
 import type { TMessageProps, TMessageIcon } from '~/common';
@@ -60,8 +60,8 @@ const ContentRender = memo(
       isMultiMessage,
       setCurrentEditId,
     });
-    const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
-    const fontSize = useRecoilValue(store.fontSize);
+    const maximizeChatSpace = useAtomValue(store.maximizeChatSpace);
+    const fontSize = useAtomValue(store.fontSize);
 
     const handleRegenerateMessage = useCallback(() => regenerateMessage(), [regenerateMessage]);
     const isLast = useMemo(

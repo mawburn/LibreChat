@@ -1,5 +1,5 @@
+import { useAtom } from 'jotai';
 import { memo, useMemo, useState } from 'react';
-import { useRecoilState } from 'recoil';
 import { ContentTypes } from 'librechat-data-provider';
 import type {
   TMessageContentParts,
@@ -51,7 +51,7 @@ const ContentParts = memo(
     setSiblingIdx,
   }: ContentPartsProps) => {
     const localize = useLocalize();
-    const [showThinking, setShowThinking] = useRecoilState<boolean>(store.showThinking);
+    const [showThinking, setShowThinking] = useAtom<boolean>(store.showThinking);
     const [isExpanded, setIsExpanded] = useState(showThinking);
     const attachmentMap = useMemo(() => mapAttachments(attachments ?? []), [attachments]);
 
