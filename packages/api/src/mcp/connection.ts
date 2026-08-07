@@ -18,8 +18,14 @@ import type {
   Dispatcher,
 } from 'undici';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
+import type { ProcHandle } from './stdioProcessTree';
 import type { MCPOAuthTokens } from './oauth/types';
 import type * as t from './types';
+import {
+  captureStdioProcessTree,
+  collectDescendantProcs,
+  readProcHandle,
+} from './stdioProcessTree';
 import { createSSRFSafeUndiciConnect, isSSRFTarget, resolveHostnameSSRF } from '~/auth';
 import { isOAuthServer, sanitizeUrlForLogging } from './utils';
 import { runOutsideTracing } from '~/utils/tracing';
@@ -1159,6 +1165,10 @@ export class MCPConnection extends EventEmitter {
    */
   public readonly createdAt: number;
 
+  /** Captured at connect() so disconnect() can still reap a crashed wrapper's tree. */
+  private stdioConnectWrapper: ProcHandle | null = null;
+  private stdioConnectDescendants: ProcHandle[] | null = null;
+
   private static circuitBreakers: Map<string, CircuitBreakerState> = new Map();
 
   public static clearCooldown(serverName: string): void {
@@ -2073,6 +2083,13 @@ export class MCPConnection extends EventEmitter {
       if (!(await this.isConnected())) {
         throw new Error('Connection not established');
       }
+      // Capture while the wrapper is alive: if it crashes mid-session the SDK nulls
+      // transport.pid, so a disconnect-only snapshot would miss the real server.
+      if (this.transport instanceof StdioClientTransport) {
+        const connectPid = this.transport.pid;
+        this.stdioConnectWrapper = connectPid ? await readProcHandle(connectPid) : null;
+        this.stdioConnectDescendants = connectPid ? await collectDescendantProcs(connectPid) : null;
+      }
     } catch (error) {
       logger.error(`${this.getLogPrefix()} Connection failed:`, error);
       throw error;
@@ -2234,8 +2251,45 @@ export class MCPConnection extends EventEmitter {
     try {
       if (this.transport) {
         await this.terminateStreamableSession();
-        await this.client.close();
-        this.transport = null;
+        // Snapshot before close() while ppid links are intact: close() stops only the
+        // direct child, so its grandchildren reparent to PID 1 and leak.
+        let stdioCleanup: { cleanup: () => Promise<number> } | null = null;
+        if (this.transport instanceof StdioClientTransport) {
+          try {
+            const extraHandles: ProcHandle[] = [
+              ...(this.stdioConnectWrapper ? [this.stdioConnectWrapper] : []),
+              ...(this.stdioConnectDescendants ?? []),
+            ];
+            stdioCleanup = await captureStdioProcessTree(this.transport.pid, extraHandles);
+          } catch (captureErr) {
+            logger.debug(
+              `${this.getLogPrefix()} stdio process-tree capture failed (non-fatal):`,
+              captureErr,
+            );
+          }
+        }
+        try {
+          await this.client.close();
+          this.transport = null;
+        } finally {
+          if (stdioCleanup) {
+            try {
+              const reaped = await stdioCleanup.cleanup();
+              if (reaped > 0) {
+                logger.debug(
+                  `${this.getLogPrefix()} Reaped ${reaped} orphaned stdio process(es) after close`,
+                );
+              }
+            } catch (cleanupErr) {
+              logger.debug(
+                `${this.getLogPrefix()} stdio process-tree cleanup failed (non-fatal):`,
+                cleanupErr,
+              );
+            }
+            this.stdioConnectWrapper = null;
+            this.stdioConnectDescendants = null;
+          }
+        }
       }
       await this.closeAgents(forceAgentClose);
       if (this.connectionState === 'disconnected') {
